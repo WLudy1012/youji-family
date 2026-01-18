@@ -93,7 +93,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
       
       {/* 魔法粒子效果 */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(30)].map((_, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-[hsl(45,80%,70%)] rounded-full animate-pulse"
@@ -127,10 +127,10 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
         {/* 主标题 */}
         <h1
           ref={titleRef}
-          className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight"
+          className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight"
         >
           <span className="magic-text block">魔法家族</span>
-          <span className="text-[hsl(45,50%,80%)] text-3xl md:text-4xl lg:text-5xl font-normal mt-2 block">
+          <span className="text-[hsl(45,50%,80%)] text-2xl md:text-3xl lg:text-4xl font-normal mt-1 block">
             世代传承的魔力
           </span>
         </h1>
@@ -138,7 +138,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
         {/* 副标题 */}
         <p
           ref={subtitleRef}
-          className="text-lg md:text-xl text-[hsl(45,40%,70%)] max-w-2xl mx-auto mb-12 leading-relaxed"
+          className="text-base md:text-lg text-[hsl(45,40%,70%)] max-w-2xl mx-auto mb-8 leading-relaxed"
         >
           在星辰与魔法交织的夜空下，我们的家族故事跨越世代，
           <br className="hidden md:block" />
@@ -147,11 +147,11 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
 
         {/* 徽章图片 */}
         <div className="relative inline-block mb-12 group">
-          <div className="absolute inset-0 bg-[hsl(45,80%,60%)] blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-[hsl(45,80%,60%)] blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
           <img
             src="/family_crest.png"
             alt="家族徽章"
-            className="relative w-40 h-40 md:w-48 md:h-48 object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-105 group-hover:rotate-6"
+            className="relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12"
           />
         </div>
 
