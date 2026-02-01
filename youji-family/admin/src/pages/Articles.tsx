@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Select, message, Popconfirm } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import { getArticles, createArticle, updateArticle, deleteArticle } from '../services/api'
 
 export default function Articles() {
   const [articles, setArticles] = useState<any[]>([])
@@ -17,8 +17,8 @@ export default function Articles() {
   const loadArticles = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/articles', { params: { limit: 1000 } })
-      setArticles(res.data.data?.data || [])
+      const res: any = await getArticles({ limit: 1000 })
+      setArticles(res.data?.data || [])
     } catch (error) {
       message.error('加载文章失败')
     } finally {
@@ -40,7 +40,7 @@ export default function Articles() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/articles/${id}`)
+      await deleteArticle(id)
       message.success('删除成功')
       loadArticles()
     } catch (error) {
@@ -53,10 +53,10 @@ export default function Articles() {
       const values = await form.validateFields()
 
       if (editingArticle) {
-        await axios.put(`/api/admin/articles/${editingArticle.id}`, values)
+        await updateArticle(editingArticle.article_id, values)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/articles', values)
+        await createArticle(values)
         message.success('创建成功')
       }
 
@@ -68,23 +68,22 @@ export default function Articles() {
   }
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', width: 60 },
+    { title: 'ID', dataIndex: 'article_id', width: 60 },
     { title: '标题', dataIndex: 'title' },
     { title: '分类', dataIndex: 'category' },
     { 
       title: '状态', 
-      dataIndex: 'is_published',
-      render: (v: number) => v ? <span style={{ color: '#52c41a' }}>已发布</span> : <span style={{ color: '#999' }}>草稿</span>
+      dataIndex: 'status',
+      render: (v: string) => v === 'published' ? <span style={{ color: '#52c41a' }}>已发布</span> : <span style={{ color: '#999' }}>草稿</span>
     },
-    { title: '浏览', dataIndex: 'view_count', width: 80 },
     {
       title: '操作',
       width: 200,
       render: (_: any, record: any) => (
         <div>
-          <Button type="link" icon={<EyeOutlined />} onClick={() => window.open(`/articles/${record.id}`, '_blank')}>查看</Button>
+          <Button type="link" icon={<EyeOutlined />} onClick={() => window.open(`/articles/${record.article_id}`, '_blank')}>查看</Button>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)}>编辑</Button>
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.article_id)}>
             <Button type="link" danger icon={<DeleteOutlined />}>删除</Button>
           </Popconfirm>
         </div>
@@ -100,7 +99,7 @@ export default function Articles() {
       </div>
 
       <Table
-        rowKey="id"
+        rowKey="article_id"
         columns={columns}
         dataSource={articles}
         loading={loading}
@@ -127,8 +126,8 @@ export default function Articles() {
           <Form.Item name="content" label="内容" rules={[{ required: true }]}>
             <Input.TextArea rows={10} placeholder="支持HTML格式" />
           </Form.Item>
-          <Form.Item name="is_published" label="发布状态">
-            <Select options={[{ label: '已发布', value: 1 }, { label: '草稿', value: 0 }]} />
+          <Form.Item name="status" label="发布状态">
+            <Select options={[{ label: '已发布', value: 'published' }, { label: '草稿', value: 'draft' }]} />
           </Form.Item>
         </Form>
       </Modal>

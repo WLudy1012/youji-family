@@ -20,6 +20,7 @@ export default function Members() {
         getMembers({ limit: 100 }),
         getFamilyTree()
       ])
+
       setMembers((membersRes as any).data?.data || [])
       setTreeData((treeRes as any).data)
     } catch (error) {
@@ -79,7 +80,7 @@ export default function Members() {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {(genMembers as any[]).map((member) => (
-                    <Link key={member.id} to={`/members/${member.id}`} className="card group">
+                    <Link key={member.member_id} to={`/members/${member.member_id}`} className="card group">
                       <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
                         {member.avatar ? (
                           <img src={member.avatar} alt={member.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
@@ -110,7 +111,7 @@ export default function Members() {
 function FamilyTreeView({ data }: { data: any }) {
   if (!data) return <div className="text-center text-gray-500">暂无族谱数据</div>
 
-  const { members, relationships } = data
+  const { members } = data
 
   // 按代数分组
   const byGeneration = members.reduce((acc: any, m: any) => {
@@ -133,8 +134,8 @@ function FamilyTreeView({ data }: { data: any }) {
             <div className="flex flex-wrap justify-center gap-4">
               {genMembers.map((member: any) => (
                 <Link
-                  key={member.id}
-                  to={`/members/${member.id}`}
+                  key={member.member_id}
+                  to={`/members/${member.member_id}`}
                   className="flex flex-col items-center p-4 bg-white border-2 border-[#1e3a5f]/20 rounded-xl hover:border-[#c9a227] transition-colors"
                 >
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-2 overflow-hidden">

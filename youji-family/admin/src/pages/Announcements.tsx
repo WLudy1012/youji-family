@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Switch, message, Popconfirm, Tag } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, PushpinOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import { getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement } from '../services/api'
 
 export default function Announcements() {
   const [announcements, setAnnouncements] = useState<any[]>([])
@@ -17,8 +17,8 @@ export default function Announcements() {
   const loadAnnouncements = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/announcements', { params: { limit: 1000 } })
-      setAnnouncements(res.data.data?.data || [])
+      const res: any = await getAnnouncements({ limit: 1000 })
+      setAnnouncements(res.data?.data || [])
     } catch (error) {
       message.error('加载公告失败')
     } finally {
@@ -40,7 +40,7 @@ export default function Announcements() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/announcements/${id}`)
+      await deleteAnnouncement(id)
       message.success('删除成功')
       loadAnnouncements()
     } catch (error) {
@@ -53,10 +53,10 @@ export default function Announcements() {
       const values = await form.validateFields()
 
       if (editingItem) {
-        await axios.put(`/api/admin/announcements/${editingItem.id}`, values)
+        await updateAnnouncement(editingItem.announcement_id, values)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/announcements', values)
+        await createAnnouncement(values)
         message.success('创建成功')
       }
 
@@ -68,7 +68,7 @@ export default function Announcements() {
   }
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', width: 60 },
+    { title: 'ID', dataIndex: 'announcement_id', width: 60 },
     { 
       title: '标题', 
       dataIndex: 'title',
@@ -81,8 +81,8 @@ export default function Announcements() {
     },
     { 
       title: '状态', 
-      dataIndex: 'is_published',
-      render: (v: number) => v ? <span style={{ color: '#52c41a' }}>已发布</span> : <span style={{ color: '#999' }}>草稿</span>
+      dataIndex: 'status',
+      render: (v: string) => v === 'active' ? <span style={{ color: '#52c41a' }}>已发布</span> : <span style={{ color: '#999' }}>草稿</span>
     },
     {
       title: '操作',
@@ -90,7 +90,7 @@ export default function Announcements() {
       render: (_: any, record: any) => (
         <div>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)}>编辑</Button>
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.announcement_id)}>
             <Button type="link" danger icon={<DeleteOutlined />}>删除</Button>
           </Popconfirm>
         </div>

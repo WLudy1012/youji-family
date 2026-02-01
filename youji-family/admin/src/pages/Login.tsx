@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button, Card, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import { adminLogin } from '../services/api'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -11,18 +11,18 @@ export default function Login() {
   const onFinish = async (values: any) => {
     try {
       setLoading(true)
-      const res: any = await axios.post('/api/auth/admin/login', values)
+      const res: any = await adminLogin(values)
       
-      if (res.data.success) {
-        localStorage.setItem('admin_token', res.data.data.token)
-        localStorage.setItem('admin_user', JSON.stringify(res.data.data.user))
+      if (res.success) {
+        localStorage.setItem('admin_token', res.data.token)
+        localStorage.setItem('admin_user', JSON.stringify(res.data.user))
         message.success('登录成功')
         navigate('/')
       } else {
-        message.error(res.data.message || '登录失败')
+        message.error(res.message || '登录失败')
       }
     } catch (error: any) {
-      message.error(error.response?.data?.message || '登录失败')
+      message.error(error.response?.message || '登录失败')
     } finally {
       setLoading(false)
     }
