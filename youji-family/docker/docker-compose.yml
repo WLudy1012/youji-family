@@ -1,0 +1,78 @@
+# ============================================
+# 由基家族网站系统 - Docker Compose 配置
+# ============================================
+
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: youji-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${DB_NAME:-youji_family}
+      MYSQL_USER: ${DB_USER:-youji}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-youji_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - youji-network
+
+  # 后端 API 服务
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: youji-backend
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-youji_family}
+      DB_USER: ${DB_USER:-youji}
+      DB_PASSWORD: ${DB_PASSWORD:-youji_password}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      - mysql
+    networks:
+      - youji-network
+
+  # Nginx 反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: youji-nginx
+    restart: always
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../frontend/dist:/usr/share/nginx/html:ro
+      - ../admin/dist:/usr/share/nginx/html/admin:ro
+      - uploads_data:/usr/share/nginx/html/uploads:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+    networks:
+      - youji-network
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  youji-network:
+    driver: bridge
