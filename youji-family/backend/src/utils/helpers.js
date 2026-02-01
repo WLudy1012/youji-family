@@ -5,7 +5,9 @@
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../middleware/auth');
+require('dotenv').config();
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
 /**
  * 密码加密
@@ -28,33 +30,17 @@ const verifyPassword = async (password, hashedPassword) => {
 };
 
 /**
- * 生成JWT令牌（管理员）
- * @param {Object} admin - 管理员信息
+ * 生成JWT令牌
+ * @param {Object} user - 用户信息
  * @returns {string} JWT令牌
  */
-const generateAdminToken = (admin) => {
+const generateToken = (user) => {
   const payload = {
-    id: admin.id,
-    username: admin.username,
-    role: admin.role,
-    type: 'admin'
-  };
-  
-  const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
-  return jwt.sign(payload, JWT_SECRET, { expiresIn });
-};
-
-/**
- * 生成JWT令牌（成员）
- * @param {Object} member - 成员信息
- * @returns {string} JWT令牌
- */
-const generateMemberToken = (member) => {
-  const payload = {
-    id: member.id,
-    member_id: member.member_id,
-    username: member.username,
-    type: 'member'
+    id: user.account_id,
+    member_id: user.member_id,
+    username: user.username,
+    role: user.role,
+    type: user.role
   };
   
   const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
@@ -157,8 +143,7 @@ const generateRandomString = (length = 8) => {
 module.exports = {
   hashPassword,
   verifyPassword,
-  generateAdminToken,
-  generateMemberToken,
+  generateToken,
   formatDate,
   getPagination,
   paginateResponse,

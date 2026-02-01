@@ -4,7 +4,7 @@
  */
 
 const { query } = require('../config/database');
-const { verifyPassword, generateAdminToken, generateMemberToken } = require('../utils/helpers');
+const { verifyPassword, generateToken } = require('../utils/helpers');
 
 /**
  * 管理员登录
@@ -14,23 +14,23 @@ const adminLogin = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    // 查询管理员
-    const admins = await query(
-      'SELECT id, username, password, email, role, is_active FROM admins WHERE username = ?',
-      [username]
+    // 查询管理员账号
+    const accounts = await query(
+      'SELECT account_id, member_id, username, password_hash, email, phone, role, status, last_login FROM family_accounts WHERE username = ? AND role = ?',
+      [username, 'admin']
     );
 
-    if (admins.length === 0) {
+    if (accounts.length === 0) {
       return res.status(401).json({
         success: false,
         message: '用户名或密码错误'
       });
     }
 
-    const admin = admins[0];
+    const account = accounts[0];
 
     // 检查账号是否启用
-    if (!admin.is_active) {
+    if (account.status !== 'active') {
       return res.status(403).json({
         success: false,
         message: '账号已被禁用'
@@ -38,7 +38,7 @@ const adminLogin = async (req, res, next) => {
     }
 
     // 验证密码
-    const isValid = await verifyPassword(password, admin.password);
+    const isValid = await verifyPassword(password, account.password_hash);
     if (!isValid) {
       return res.status(401).json({
         success: false,
@@ -48,12 +48,12 @@ const adminLogin = async (req, res, next) => {
 
     // 更新最后登录时间
     await query(
-      'UPDATE admins SET last_login = NOW() WHERE id = ?',
-      [admin.id]
+      'UPDATE family_accounts SET last_login = NOW() WHERE account_id = ?',
+      [account.account_id]
     );
 
     // 生成JWT令牌
-    const token = generateAdminToken(admin);
+    const token = generateToken(account);
 
     res.json({
       success: true,
@@ -61,10 +61,12 @@ const adminLogin = async (req, res, next) => {
       data: {
         token,
         user: {
-          id: admin.id,
-          username: admin.username,
-          email: admin.email,
-          role: admin.role
+          id: account.account_id,
+          member_id: account.member_id,
+          username: account.username,
+          email: account.email,
+          phone: account.phone,
+          role: account.role
         }
       }
     });
@@ -81,27 +83,27 @@ const memberLogin = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    // 查询成员用户
-    const users = await query(
-      `SELECT mu.id, mu.member_id, mu.username, mu.password, mu.email, mu.is_active, 
-              m.name as member_name, m.avatar 
-       FROM member_users mu 
-       JOIN members m ON mu.member_id = m.id 
-       WHERE mu.username = ?`,
-      [username]
+    // 查询成员账号
+    const accounts = await query(
+      `SELECT fa.account_id, fa.member_id, fa.username, fa.password_hash, fa.email, fa.phone, fa.role, fa.status, fa.last_login,
+              fm.name as member_name, fm.avatar 
+       FROM family_accounts fa 
+       JOIN family_members fm ON fa.member_id = fm.member_id 
+       WHERE fa.username = ? AND fa.role = ?`,
+      [username, 'member']
     );
 
-    if (users.length === 0) {
+    if (accounts.length === 0) {
       return res.status(401).json({
         success: false,
         message: '用户名或密码错误'
       });
     }
 
-    const user = users[0];
+    const account = accounts[0];
 
     // 检查账号是否启用
-    if (!user.is_active) {
+    if (account.status !== 'active') {
       return res.status(403).json({
         success: false,
         message: '账号已被禁用'
@@ -109,7 +111,7 @@ const memberLogin = async (req, res, next) => {
     }
 
     // 验证密码
-    const isValid = await verifyPassword(password, user.password);
+    const isValid = await verifyPassword(password, account.password_hash);
     if (!isValid) {
       return res.status(401).json({
         success: false,
@@ -119,12 +121,12 @@ const memberLogin = async (req, res, next) => {
 
     // 更新最后登录时间
     await query(
-      'UPDATE member_users SET last_login = NOW() WHERE id = ?',
-      [user.id]
+      'UPDATE family_accounts SET last_login = NOW() WHERE account_id = ?',
+      [account.account_id]
     );
 
     // 生成JWT令牌
-    const token = generateMemberToken(user);
+    const token = generateToken(account);
 
     res.json({
       success: true,
@@ -132,12 +134,14 @@ const memberLogin = async (req, res, next) => {
       data: {
         token,
         user: {
-          id: user.id,
-          member_id: user.member_id,
-          username: user.username,
-          email: user.email,
-          member_name: user.member_name,
-          avatar: user.avatar
+          id: account.account_id,
+          member_id: account.member_id,
+          username: account.username,
+          email: account.email,
+          phone: account.phone,
+          member_name: account.member_name,
+          avatar: account.avatar,
+          role: account.role
         }
       }
     });
@@ -152,14 +156,14 @@ const memberLogin = async (req, res, next) => {
  */
 const getAdminProfile = async (req, res, next) => {
   try {
-    const adminId = req.user.id;
+    const accountId = req.user.id;
 
-    const admins = await query(
-      'SELECT id, username, email, role, is_active, last_login, created_at FROM admins WHERE id = ?',
-      [adminId]
+    const accounts = await query(
+      'SELECT account_id, member_id, username, email, phone, role, status, last_login, created_at FROM family_accounts WHERE account_id = ? AND role = ?',
+      [accountId, 'admin']
     );
 
-    if (admins.length === 0) {
+    if (accounts.length === 0) {
       return res.status(404).json({
         success: false,
         message: '管理员不存在'
@@ -168,7 +172,7 @@ const getAdminProfile = async (req, res, next) => {
 
     res.json({
       success: true,
-      data: admins[0]
+      data: accounts[0]
     });
   } catch (error) {
     next(error);
@@ -181,19 +185,18 @@ const getAdminProfile = async (req, res, next) => {
  */
 const getMemberProfile = async (req, res, next) => {
   try {
-    const memberId = req.user.member_id;
+    const accountId = req.user.id;
 
-    const members = await query(
-      `SELECT m.id, m.name, m.avatar, m.birth_date, m.death_date, m.bio, 
-              m.generation, m.gender, m.phone, m.email, m.address,
-              mu.username, mu.email as user_email, mu.last_login
-       FROM members m 
-       JOIN member_users mu ON m.id = mu.member_id 
-       WHERE m.id = ?`,
-      [memberId]
+    const accounts = await query(
+      `SELECT fa.account_id, fa.member_id, fa.username, fa.email, fa.phone, fa.role, fa.status, fa.last_login,
+              fm.name, fm.avatar, fm.birth_date, fm.bio, fm.generation, fm.status as member_status
+       FROM family_accounts fa 
+       JOIN family_members fm ON fa.member_id = fm.member_id 
+       WHERE fa.account_id = ? AND fa.role = ?`,
+      [accountId, 'member']
     );
 
-    if (members.length === 0) {
+    if (accounts.length === 0) {
       return res.status(404).json({
         success: false,
         message: '成员不存在'
@@ -202,7 +205,7 @@ const getMemberProfile = async (req, res, next) => {
 
     res.json({
       success: true,
-      data: members[0]
+      data: accounts[0]
     });
   } catch (error) {
     next(error);
@@ -215,16 +218,16 @@ const getMemberProfile = async (req, res, next) => {
  */
 const changeAdminPassword = async (req, res, next) => {
   try {
-    const adminId = req.user.id;
+    const accountId = req.user.id;
     const { oldPassword, newPassword } = req.body;
 
-    // 查询管理员
-    const admins = await query(
-      'SELECT password FROM admins WHERE id = ?',
-      [adminId]
+    // 查询账号
+    const accounts = await query(
+      'SELECT password_hash FROM family_accounts WHERE account_id = ? AND role = ?',
+      [accountId, 'admin']
     );
 
-    if (admins.length === 0) {
+    if (accounts.length === 0) {
       return res.status(404).json({
         success: false,
         message: '管理员不存在'
@@ -232,7 +235,7 @@ const changeAdminPassword = async (req, res, next) => {
     }
 
     // 验证旧密码
-    const isValid = await verifyPassword(oldPassword, admins[0].password);
+    const isValid = await verifyPassword(oldPassword, accounts[0].password_hash);
     if (!isValid) {
       return res.status(400).json({
         success: false,
@@ -245,8 +248,8 @@ const changeAdminPassword = async (req, res, next) => {
     const hashedPassword = await hashPassword(newPassword);
 
     await query(
-      'UPDATE admins SET password = ? WHERE id = ?',
-      [hashedPassword, adminId]
+      'UPDATE family_accounts SET password_hash = ? WHERE account_id = ?',
+      [hashedPassword, accountId]
     );
 
     res.json({
