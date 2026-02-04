@@ -1,29 +1,34 @@
-# Dependencies
+# ===============================
+# 由基家族网站系统 - .gitignore 文件
+# ===============================
+
+# 依赖目录
 node_modules/
 **/node_modules/
 
-# Environment variables
+# 环境变量文件
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*.local
 
-# Build outputs
+# 构建输出目录
 dist/
 build/
 **/dist/
 **/build/
 out/
 
-# IDE and editor files
+# IDE 和编辑器文件
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# 操作系统生成文件
 Thumbs.db
 .DS_Store
 .DS_Store?
@@ -32,7 +37,7 @@ Thumbs.db
 .Trashes
 ehthumbs.db
 
-# Logs
+# 日志文件
 logs
 *.log
 npm-debug.log*
@@ -41,40 +46,70 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Testing
+# 测试相关文件
 coverage/
 *.lcov
 
-# Temporary files
+# 临时文件
 *.tmp
 *.temp
 .cache/
+.temp/
 
-# TypeScript
+# TypeScript 构建信息
 *.tsbuildinfo
 
-# Docker
+# Docker 相关文件
 .dockerignore
 
-# Nginx
+# Nginx 配置
 nginx.conf
 
-# Database
+# 数据库文件
 *.db
 *.sqlite
 
-# Uploads
+# 上传文件目录
 uploads/
 **/uploads/
 
-# Backend
+# 备份目录
+backups/
+**/backups/
+
+# 后端配置文件
 backend/src/config/database.js
 backend/src/config/upload.js
 
-# Admin
-admin/build/
-admin/dist/
+# 前端构建目录
+app/build/
+app/dist/
+magic-family-website/build/
+magic-family-website/dist/
+youji-family/frontend/build/
+youji-family/frontend/dist/
 
-# Frontend
-frontend/build/
-frontend/dist/
+# 后台管理构建目录
+youji-family/admin/build/
+youji-family/admin/dist/
+
+# 部署包目录
+deployment-package/
+
+# 调试信息
+*.debug
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+
+# 证书文件
+*.pem
+*.key
+*.crt
+
+# 编辑器配置文件
+.eslintcache
+.prettierignore
+.stylelintignore
