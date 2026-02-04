@@ -7,12 +7,12 @@ const { query } = require('../config/database');
 
 /**
  * 获取所有配置
- * GET /api/configs
+ * GET /api/admin/configs
  */
 const getAllConfigs = async (req, res, next) => {
   try {
     const configs = await query(
-      'SELECT config_key, config_value, description FROM site_configs ORDER BY config_key'
+      'SELECT config_id, config_key, config_value, config_type, description FROM family_configs ORDER BY config_key'
     );
 
     // 转换为键值对格式
@@ -32,14 +32,14 @@ const getAllConfigs = async (req, res, next) => {
 
 /**
  * 获取单个配置
- * GET /api/configs/:key
+ * GET /api/admin/configs/:key
  */
 const getConfigByKey = async (req, res, next) => {
   try {
     const { key } = req.params;
 
     const configs = await query(
-      'SELECT config_key, config_value, description FROM site_configs WHERE config_key = ?',
+      'SELECT config_id, config_key, config_value, config_type, description FROM family_configs WHERE config_key = ?',
       [key]
     );
 
@@ -61,7 +61,7 @@ const getConfigByKey = async (req, res, next) => {
 
 /**
  * 批量更新配置
- * PUT /api/configs
+ * PUT /api/admin/configs
  */
 const updateConfigs = async (req, res, next) => {
   try {
@@ -82,7 +82,7 @@ const updateConfigs = async (req, res, next) => {
       }
 
       await query(
-        'UPDATE site_configs SET config_value = ?, updated_at = NOW() WHERE config_key = ?',
+        'UPDATE family_configs SET config_value = ?, updated_at = NOW() WHERE config_key = ?',
         [value, key]
       );
     }
@@ -98,7 +98,7 @@ const updateConfigs = async (req, res, next) => {
 
 /**
  * 更新单个配置
- * PUT /api/configs/:key
+ * PUT /api/admin/configs/:key
  */
 const updateConfig = async (req, res, next) => {
   try {
@@ -107,7 +107,7 @@ const updateConfig = async (req, res, next) => {
 
     // 检查配置项是否存在
     const existing = await query(
-      'SELECT id FROM site_configs WHERE config_key = ?',
+      'SELECT config_id FROM family_configs WHERE config_key = ?',
       [key]
     );
 
@@ -119,7 +119,7 @@ const updateConfig = async (req, res, next) => {
     }
 
     await query(
-      'UPDATE site_configs SET config_value = ?, updated_at = NOW() WHERE config_key = ?',
+      'UPDATE family_configs SET config_value = ?, updated_at = NOW() WHERE config_key = ?',
       [value, key]
     );
 
@@ -134,30 +134,27 @@ const updateConfig = async (req, res, next) => {
 
 /**
  * 获取前端展示所需配置
- * GET /api/configs/public
+ * GET /api/configs
  */
 const getPublicConfigs = async (req, res, next) => {
   try {
     // 只返回前端需要的配置项
     const publicKeys = [
       'site_name',
-      'site_logo',
+      'site_slogan',
       'site_description',
-      'site_keywords',
+      'site_logo',
       'contact_email',
       'contact_phone',
-      'theme_primary_color',
-      'theme_secondary_color',
-      'footer_copyright',
-      'family_declaration',
-      'home_banner_title',
-      'home_banner_subtitle',
-      'icp_number'
+      'footer_text',
+      'family_creed',
+      'theme_color',
+      'accent_color'
     ];
 
     const placeholders = publicKeys.map(() => '?').join(',');
     const configs = await query(
-      `SELECT config_key, config_value FROM site_configs WHERE config_key IN (${placeholders})`,
+      `SELECT config_key, config_value FROM family_configs WHERE config_key IN (${placeholders})`,
       publicKeys
     );
 

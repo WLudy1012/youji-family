@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Card, Row, Col, Statistic } from 'antd'
 import { TeamOutlined, FileTextOutlined, PictureOutlined, MessageOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import { getMembers, getArticles, getAlbums, getGuestbook } from '../services/api'
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -19,17 +19,17 @@ export default function Dashboard() {
     try {
       // 并行加载统计数据
       const [membersRes, articlesRes, albumsRes, messagesRes] = await Promise.all([
-        axios.get('/api/members', { params: { limit: 1 } }),
-        axios.get('/api/articles', { params: { limit: 1 } }),
-        axios.get('/api/albums', { params: { limit: 1 } }),
-        axios.get('/api/admin/guestbook', { params: { limit: 1 } })
+        getMembers({ limit: 1 }),
+        getArticles({ limit: 1 }),
+        getAlbums({ limit: 1 }),
+        getGuestbook({ limit: 1 })
       ])
 
       setStats({
-        members: membersRes.data.data?.pagination?.total || 0,
-        articles: articlesRes.data.data?.pagination?.total || 0,
-        albums: albumsRes.data.data?.pagination?.total || 0,
-        messages: messagesRes.data.data?.pagination?.total || 0
+        members: membersRes.data?.pagination?.total || membersRes.data?.data?.length || 0,
+        articles: articlesRes.data?.pagination?.total || articlesRes.data?.data?.length || 0,
+        albums: albumsRes.data?.pagination?.total || albumsRes.data?.data?.length || 0,
+        messages: messagesRes.data?.pagination?.total || messagesRes.data?.data?.length || 0
       })
     } catch (error) {
       console.error('加载统计数据失败:', error)

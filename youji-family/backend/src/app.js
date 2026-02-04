@@ -68,11 +68,15 @@ const startServer = async () => {
   try {
     // 测试数据库连接
     console.log('正在连接数据库...');
-    const dbConnected = await testConnection();
+    let dbConnected = false;
     
-    if (!dbConnected) {
-      console.error('数据库连接失败，请检查配置');
-      process.exit(1);
+    try {
+      dbConnected = await testConnection();
+      console.log('✅ 数据库连接成功');
+    } catch (error) {
+      console.warn('⚠️  数据库连接失败，将以模拟数据模式启动');
+      console.warn('   提示: 请配置正确的数据库连接信息以使用完整功能');
+      dbConnected = false;
     }
 
     // 确保上传目录存在
@@ -89,6 +93,7 @@ const startServer = async () => {
       console.log(`📡 服务地址: http://localhost:${PORT}`);
       console.log(`📚 API文档: http://localhost:${PORT}/api`);
       console.log(`💓 健康检查: http://localhost:${PORT}/health`);
+      console.log(`💡 运行模式: ${dbConnected ? '完整模式' : '模拟数据模式'}`);
       console.log('='.repeat(50));
     });
   } catch (error) {

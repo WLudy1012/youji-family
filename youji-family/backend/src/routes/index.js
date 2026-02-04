@@ -19,6 +19,7 @@ const announcementController = require('../controllers/announcementController');
 const albumController = require('../controllers/albumController');
 const guestbookController = require('../controllers/guestbookController');
 const uploadController = require('../controllers/uploadController');
+const backupController = require('../controllers/backupController');
 
 // ==================== 公开接口 ====================
 
@@ -109,5 +110,11 @@ router.post('/admin/upload/images',
   uploadErrorHandler,
   uploadController.uploadMultipleImages
 );
+
+// 数据备份
+router.get('/admin/backups', verifyAdminToken, backupController.getBackups);
+router.post('/admin/backups', verifyAdminToken, backupController.createBackup);
+router.post('/admin/backups/:id/restore', verifyAdminToken, backupController.restoreBackup);
+router.delete('/admin/backups/:id', verifyAdminToken, backupController.deleteBackup);
 
 module.exports = router;

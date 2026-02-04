@@ -11,7 +11,8 @@ import {
   SettingOutlined,
   LogoutOutlined,
   UserOutlined,
-  DownOutlined
+  DownOutlined,
+  DownloadOutlined
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import Login from './pages/Login'
@@ -22,6 +23,7 @@ import Announcements from './pages/Announcements'
 import Albums from './pages/Albums'
 import Guestbook from './pages/Guestbook'
 import Settings from './pages/Settings'
+import Backups from './pages/Backups'
 
 const { Header, Sider, Content } = Layout
 
@@ -56,6 +58,7 @@ function MainLayout() {
     { key: '/announcements', icon: <BellOutlined />, label: '公告管理' },
     { key: '/albums', icon: <PictureOutlined />, label: '相册管理' },
     { key: '/guestbook', icon: <MessageOutlined />, label: '留言管理' },
+    { key: '/backups', icon: <DownloadOutlined />, label: '数据备份' },
     { key: '/settings', icon: <SettingOutlined />, label: '系统设置' },
   ]
 
@@ -125,6 +128,7 @@ function MainLayout() {
             <Route path="/announcements" element={<Announcements />} />
             <Route path="/albums" element={<Albums />} />
             <Route path="/guestbook" element={<Guestbook />} />
+            <Route path="/backups" element={<Backups />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </Content>

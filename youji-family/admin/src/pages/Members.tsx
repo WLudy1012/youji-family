@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Select, DatePicker, message, Popconfirm } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, UserAddOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import { getMembers, createMember, updateMember, deleteMember, createMemberAccount } from '../services/api'
 
 export default function Members() {
   const [members, setMembers] = useState<any[]>([])
@@ -20,8 +20,8 @@ export default function Members() {
   const loadMembers = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/members', { params: { limit: 1000 } })
-      setMembers(res.data.data?.data || [])
+      const res: any = await getMembers({ limit: 1000 })
+      setMembers(res.data?.data || [])
     } catch (error) {
       message.error('加载成员失败')
     } finally {
@@ -39,15 +39,14 @@ export default function Members() {
     setEditingMember(record)
     form.setFieldsValue({
       ...record,
-      birth_date: record.birth_date ? new Date(record.birth_date) : null,
-      death_date: record.death_date ? new Date(record.death_date) : null
+      birth_date: record.birth_date ? new Date(record.birth_date) : null
     })
     setModalVisible(true)
   }
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/members/${id}`)
+      await deleteMember(id)
       message.success('删除成功')
       loadMembers()
     } catch (error) {
@@ -56,7 +55,7 @@ export default function Members() {
   }
 
   const handleCreateAccount = (record: any) => {
-    setSelectedMemberId(record.id)
+    setSelectedMemberId(record.member_id)
     accountForm.resetFields()
     setAccountModalVisible(true)
   }
@@ -67,15 +66,14 @@ export default function Members() {
       
       const data = {
         ...values,
-        birth_date: values.birth_date?.format('YYYY-MM-DD'),
-        death_date: values.death_date?.format('YYYY-MM-DD')
+        birth_date: values.birth_date?.format('YYYY-MM-DD')
       }
 
       if (editingMember) {
-        await axios.put(`/api/admin/members/${editingMember.id}`, data)
+        await updateMember(editingMember.member_id, data)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/members', data)
+        await createMember(data)
         message.success('创建成功')
       }
       
@@ -89,7 +87,7 @@ export default function Members() {
   const handleAccountModalOk = async () => {
     try {
       const values = await accountForm.validateFields()
-      await axios.post(`/api/admin/members/${selectedMemberId}/account`, values)
+      await createMemberAccount(selectedMemberId, values)
       message.success('账号创建成功')
       setAccountModalVisible(false)
     } catch (error) {
@@ -98,12 +96,11 @@ export default function Members() {
   }
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', width: 60 },
+    { title: 'ID', dataIndex: 'member_id', width: 60 },
     { title: '姓名', dataIndex: 'name' },
     { title: '代数', dataIndex: 'generation', width: 80 },
-    { title: '性别', dataIndex: 'gender', width: 80, render: (v: string) => v === 'male' ? '男' : v === 'female' ? '女' : '-' },
-    { title: '电话', dataIndex: 'phone' },
-    { title: '邮箱', dataIndex: 'email' },
+    { title: '关系', dataIndex: 'relation', width: 100 },
+    { title: '出生日期', dataIndex: 'birth_date', width: 120 },
     {
       title: '操作',
       width: 250,
@@ -111,7 +108,7 @@ export default function Members() {
         <div>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)}>编辑</Button>
           <Button type="link" icon={<UserAddOutlined />} onClick={() => handleCreateAccount(record)}>创建账号</Button>
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.member_id)}>
             <Button type="link" danger icon={<DeleteOutlined />}>删除</Button>
           </Popconfirm>
         </div>
@@ -127,7 +124,7 @@ export default function Members() {
       </div>
 
       <Table
-        rowKey="id"
+        rowKey="member_id"
         columns={columns}
         dataSource={members}
         loading={loading}
