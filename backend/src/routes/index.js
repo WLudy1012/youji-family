@@ -35,7 +35,7 @@ router.get('/articles', articleController.getArticles);
 router.get('/articles/:id', articleController.getArticleById);
 
 // 公告
-router.get('/announcements', announcementController.getAnnouncements);
+router.get('/announcements', optionalAuth, announcementController.getAnnouncements);
 router.get('/announcements/:id', announcementController.getAnnouncementById);
 
 // 相册

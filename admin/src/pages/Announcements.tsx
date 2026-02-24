@@ -17,7 +17,7 @@ export default function Announcements() {
   const loadAnnouncements = async () => {
     try {
       setLoading(true)
-      const res: any = await api.get('/api/announcements', { params: { limit: 1000 } })
+      const res: any = await api.get('/api/admin/announcements', { params: { limit: 1000 } })
       setAnnouncements(res.data.data?.data || [])
     } catch (error) {
       message.error('加载公告失败')
@@ -28,13 +28,17 @@ export default function Announcements() {
 
   const handleAdd = () => {
     setEditingItem(null)
-    form.resetFields()
+    form.setFieldsValue({ is_pinned: false, is_published: true })
     setModalVisible(true)
   }
 
   const handleEdit = (record: any) => {
     setEditingItem(record)
-    form.setFieldsValue(record)
+    form.setFieldsValue({
+      ...record,
+      is_pinned: Boolean(record.is_pinned),
+      is_published: Boolean(record.is_published)
+    })
     setModalVisible(true)
   }
 
@@ -51,12 +55,17 @@ export default function Announcements() {
   const handleModalOk = async () => {
     try {
       const values = await form.validateFields()
+      const payload = {
+        ...values,
+        is_pinned: values.is_pinned ? 1 : 0,
+        is_published: values.is_published ? 1 : 0
+      }
 
       if (editingItem) {
-        await api.put(`/api/admin/announcements/${editingItem.id}`, values)
+        await api.put(`/api/admin/announcements/${editingItem.id}`, payload)
         message.success('更新成功')
       } else {
-        await api.post('/api/admin/announcements', values)
+        await api.post('/api/admin/announcements', payload)
         message.success('创建成功')
       }
 
@@ -131,7 +140,7 @@ export default function Announcements() {
             <Switch />
           </Form.Item>
           <Form.Item name="is_published" label="发布" valuePropName="checked">
-            <Switch defaultChecked />
+            <Switch />
           </Form.Item>
         </Form>
       </Modal>

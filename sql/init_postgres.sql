@@ -149,3 +149,25 @@ ON CONFLICT (config_key) DO NOTHING;
 
 -- 确保默认管理员密码可登录（admin123）
 UPDATE admins SET password = '$2a$10$SwKy1UR6xYaiVa6PSBpkJOG8P8gj0OWf.I9CxJMgIp0Ak5bf.cPMO' WHERE username = 'admin';
+
+
+-- 示例数据：基础内容，便于后台开箱可见
+INSERT INTO members (name, generation, bio, is_public, sort_order)
+SELECT '由基始祖', 1, '家族创始人，开创了由基家族的辉煌历史。', 1, 0
+WHERE NOT EXISTS (SELECT 1 FROM members WHERE name = '由基始祖');
+
+INSERT INTO articles (title, content, summary, category, is_published, published_at)
+SELECT '由基家族历史沿革', '<p>由基家族源远流长，历经数百年的发展...</p>', '介绍由基家族的历史渊源和发展历程', '家族历史', 1, NOW()
+WHERE NOT EXISTS (SELECT 1 FROM articles WHERE title = '由基家族历史沿革');
+
+INSERT INTO announcements (title, content, is_pinned, is_published)
+SELECT '欢迎访问由基家族网站', '欢迎大家访问由基家族官方网站，这里记录了家族的历史和文化。', 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM announcements WHERE title = '欢迎访问由基家族网站');
+
+INSERT INTO albums (name, description, is_public)
+SELECT '家族聚会', '记录家族重要聚会活动的精彩瞬间', 1
+WHERE NOT EXISTS (SELECT 1 FROM albums WHERE name = '家族聚会');
+
+INSERT INTO registration_requests (username, password, email, real_name, phone, reason, status)
+SELECT 'demo_request', '$2a$10$SwKy1UR6xYaiVa6PSBpkJOG8P8gj0OWf.I9CxJMgIp0Ak5bf.cPMO', 'demo-request@youji-family.com', '演示申请人', '13800000000', '用于演示管理员审核流程', 'pending'
+WHERE NOT EXISTS (SELECT 1 FROM registration_requests WHERE username = 'demo_request');
