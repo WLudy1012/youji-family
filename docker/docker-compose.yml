@@ -5,22 +5,20 @@
 version: '3.8'
 
 services:
-  # MySQL 数据库
-  mysql:
-    image: mysql:8.0
-    container_name: youji-mysql
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:16
+    container_name: youji-postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password}
-      MYSQL_DATABASE: ${DB_NAME:-youji_family}
-      MYSQL_USER: ${DB_USER:-youji}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-youji_password}
+      POSTGRES_DB: ${DB_NAME:-youji_family}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ../sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+      - ../sql/init_postgres.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
-      - "${DB_PORT:-3306}:3306"
-    command: --default-authentication-plugin=mysql_native_password
+      - "${DB_PORT:-5432}:5432"
     networks:
       - youji-network
 
@@ -34,11 +32,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_HOST: mysql
-      DB_PORT: 3306
+      DB_HOST: postgres
+      DB_PORT: 5432
       DB_NAME: ${DB_NAME:-youji_family}
-      DB_USER: ${DB_USER:-youji}
-      DB_PASSWORD: ${DB_PASSWORD:-youji_password}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
     volumes:
@@ -46,7 +44,7 @@ services:
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     depends_on:
-      - mysql
+      - postgres
     networks:
       - youji-network
 
@@ -70,7 +68,7 @@ services:
       - youji-network
 
 volumes:
-  mysql_data:
+  postgres_data:
   uploads_data:
 
 networks:
