@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button, Card, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -11,7 +11,7 @@ export default function Login() {
   const onFinish = async (values: any) => {
     try {
       setLoading(true)
-      const res: any = await axios.post('/api/auth/admin/login', values)
+      const res: any = await api.post('/api/auth/admin/login', values)
       
       if (res.data.success) {
         localStorage.setItem('admin_token', res.data.data.token)
