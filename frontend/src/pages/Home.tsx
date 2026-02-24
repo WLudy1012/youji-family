@@ -60,7 +60,11 @@ export default function Home() {
     )
   }
 
-  const { config, announcements, members, articles, albums } = data || {}
+  const config = data?.config
+  const announcements = data?.announcements || []
+  const members = data?.members || []
+  const articles = data?.articles || []
+  const albums = data?.albums || []
 
   return (
     <div className="space-y-16">
@@ -251,13 +255,10 @@ export default function Home() {
           <Lock className="w-16 h-16 mx-auto mb-4 text-[#c9a227]" />
           <h2 className="text-2xl font-bold mb-4">更多内容等你探索</h2>
           <p className="text-white/70 mb-6">登录后可查看家族成员、文章、相册等完整内容</p>
-          <button 
-            onClick={() => document.querySelector('button[onClick]')?.dispatchEvent(new Event('click'))}
-            className="btn btn-secondary inline-flex"
-          >
+          <Link to="/login" className="btn btn-secondary inline-flex">
             <LogIn className="w-5 h-5 mr-2" />
             立即登录
-          </button>
+          </Link>
         </section>
       )}
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Card, Row, Col, Statistic } from 'antd'
 import { TeamOutlined, FileTextOutlined, PictureOutlined, MessageOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -19,10 +19,10 @@ export default function Dashboard() {
     try {
       // 并行加载统计数据
       const [membersRes, articlesRes, albumsRes, messagesRes] = await Promise.all([
-        axios.get('/api/members', { params: { limit: 1 } }),
-        axios.get('/api/articles', { params: { limit: 1 } }),
-        axios.get('/api/albums', { params: { limit: 1 } }),
-        axios.get('/api/admin/guestbook', { params: { limit: 1 } })
+        api.get('/api/members', { params: { limit: 1 } }),
+        api.get('/api/articles', { params: { limit: 1 } }),
+        api.get('/api/albums', { params: { limit: 1 } }),
+        api.get('/api/admin/guestbook', { params: { limit: 1 } })
       ])
 
       setStats({

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import { Layout, Menu, Button, message, Avatar, Dropdown } from 'antd'
+import { useState } from 'react'
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import { Layout, Menu, Button, Avatar, Dropdown } from 'antd'
 import {
   DashboardOutlined,
   TeamOutlined,
@@ -48,6 +48,7 @@ const logout = () => {
 // 主布局组件
 function MainLayout() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const userInfo = getUserInfo()
 
@@ -90,7 +91,7 @@ function MainLayout() {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={[window.location.pathname]}
+          selectedKeys={[location.pathname]}
           style={{ background: '#1e3a5f' }}
           items={menuItems}
           onClick={({ key }) => navigate(key)}

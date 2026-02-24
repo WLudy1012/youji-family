@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Select, message, Popconfirm } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Articles() {
   const [articles, setArticles] = useState<any[]>([])
@@ -17,7 +17,7 @@ export default function Articles() {
   const loadArticles = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/articles', { params: { limit: 1000 } })
+      const res: any = await api.get('/api/articles', { params: { limit: 1000 } })
       setArticles(res.data.data?.data || [])
     } catch (error) {
       message.error('加载文章失败')
@@ -40,7 +40,7 @@ export default function Articles() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/articles/${id}`)
+      await api.delete(`/api/admin/articles/${id}`)
       message.success('删除成功')
       loadArticles()
     } catch (error) {
@@ -53,10 +53,10 @@ export default function Articles() {
       const values = await form.validateFields()
 
       if (editingArticle) {
-        await axios.put(`/api/admin/articles/${editingArticle.id}`, values)
+        await api.put(`/api/admin/articles/${editingArticle.id}`, values)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/articles', values)
+        await api.post('/api/admin/articles', values)
         message.success('创建成功')
       }
 
