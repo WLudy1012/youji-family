@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Switch, message, Popconfirm, Tag } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, PushpinOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Announcements() {
   const [announcements, setAnnouncements] = useState<any[]>([])
@@ -17,7 +17,7 @@ export default function Announcements() {
   const loadAnnouncements = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/announcements', { params: { limit: 1000 } })
+      const res: any = await api.get('/api/announcements', { params: { limit: 1000 } })
       setAnnouncements(res.data.data?.data || [])
     } catch (error) {
       message.error('加载公告失败')
@@ -40,7 +40,7 @@ export default function Announcements() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/announcements/${id}`)
+      await api.delete(`/api/admin/announcements/${id}`)
       message.success('删除成功')
       loadAnnouncements()
     } catch (error) {
@@ -53,10 +53,10 @@ export default function Announcements() {
       const values = await form.validateFields()
 
       if (editingItem) {
-        await axios.put(`/api/admin/announcements/${editingItem.id}`, values)
+        await api.put(`/api/admin/announcements/${editingItem.id}`, values)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/announcements', values)
+        await api.post('/api/admin/announcements', values)
         message.success('创建成功')
       }
 

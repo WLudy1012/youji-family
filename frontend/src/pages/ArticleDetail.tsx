@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { BookOpen, Eye, Calendar, ChevronLeft, User } from 'lucide-react'
+import { Eye, Calendar, ChevronLeft } from 'lucide-react'
 import { getArticle } from '../services/api'
 
 export default function ArticleDetail() {
