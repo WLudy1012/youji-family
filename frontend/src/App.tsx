@@ -32,26 +32,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
-// 聊天页面完整登录检查
-function ChatLoginCheck({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn, isLoading } = useAuth()
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1e3a5f]"></div>
-      </div>
-    )
-  }
-
-  // 访客状态重定向到登录页
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace />
-  }
-
-  return <>{children}</>
-}
-
 function AppRoutes() {
   return (
     <Routes>
