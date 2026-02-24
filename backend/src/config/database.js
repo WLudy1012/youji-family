@@ -45,6 +45,35 @@ const query = async (sql, params = []) => {
   return [{ affectedRows: result.rowCount }];
 };
 
+
+const getConnection = async () => {
+  const client = await pool.connect();
+
+  return {
+    beginTransaction: async () => client.query('BEGIN'),
+    commit: async () => client.query('COMMIT'),
+    rollback: async () => client.query('ROLLBACK'),
+    execute: async (sql, params = []) => {
+      const pgSqlBase = convertPlaceholders(sql);
+      const pgSql = isInsert(pgSqlBase) && !hasReturning(pgSqlBase)
+        ? `${pgSqlBase} RETURNING id`
+        : pgSqlBase;
+      const result = await client.query(pgSql, params);
+
+      if (/^\s*select\s+/i.test(sql)) {
+        return [result.rows];
+      }
+
+      if (isInsert(sql)) {
+        return [{ insertId: result.rows?.[0]?.id, affectedRows: result.rowCount }];
+      }
+
+      return [{ affectedRows: result.rowCount }];
+    },
+    release: () => client.release()
+  };
+};
+
 const testConnection = async () => {
   try {
     await pool.query('SELECT 1');
@@ -59,5 +88,6 @@ const testConnection = async () => {
 module.exports = {
   pool,
   query,
-  testConnection
+  testConnection,
+  getConnection
 };

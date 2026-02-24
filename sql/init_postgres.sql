@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS registration_requests (
 );
 
 INSERT INTO admins (username, password, email, role)
-VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqQzBZN0UfGNEKjN7xK8Q8Q8Q8Q8Q', 'admin@youji-family.com', 'super_admin')
+VALUES ('admin', '$2a$10$SwKy1UR6xYaiVa6PSBpkJOG8P8gj0OWf.I9CxJMgIp0Ak5bf.cPMO', 'admin@youji-family.com', 'super_admin')
 ON CONFLICT (username) DO NOTHING;
 
 INSERT INTO site_configs (config_key, config_value, description) VALUES
@@ -145,3 +145,7 @@ INSERT INTO site_configs (config_key, config_value, description) VALUES
 ('home_banner_title', '由基家族', '首页横幅标题'),
 ('home_banner_subtitle', '世代传承，薪火相传', '首页横幅副标题')
 ON CONFLICT (config_key) DO NOTHING;
+
+
+-- 确保默认管理员密码可登录（admin123）
+UPDATE admins SET password = '$2a$10$SwKy1UR6xYaiVa6PSBpkJOG8P8gj0OWf.I9CxJMgIp0Ak5bf.cPMO' WHERE username = 'admin';
