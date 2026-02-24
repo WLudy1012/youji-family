@@ -25,7 +25,7 @@
   - 站点配置
 
 - 💾 **数据库**
-  - MySQL关系型数据库
+  - PostgreSQL关系型数据库
   - 完整的表结构设计
   - 支持数据备份/恢复
 
@@ -36,7 +36,7 @@
 
 ## 技术栈
 
-- **后端**: Node.js + Express + MySQL
+- **后端**: Node.js + Express + PostgreSQL
 - **前台**: React + Vite + Tailwind CSS
 - **后台**: React + Ant Design
 - **部署**: Docker + Nginx
@@ -68,10 +68,10 @@ docker-compose up -d
 
 ```bash
 # 1. 启动数据库
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8.0
+docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:16
 
 # 2. 导入数据库
-mysql -u root -p < sql/init.sql
+psql -h localhost -U postgres -d youji_family -f sql/init_postgres.sql
 
 # 3. 启动后端
 cd backend
@@ -148,9 +148,9 @@ youji-family/
 | 变量名 | 说明 | 默认值 |
 |--------|------|--------|
 | DB_HOST | 数据库主机 | localhost |
-| DB_PORT | 数据库端口 | 3306 |
+| DB_PORT | 数据库端口 | 5432 |
 | DB_NAME | 数据库名 | youji_family |
-| DB_USER | 数据库用户 | youji |
+| DB_USER | 数据库用户 | postgres |
 | DB_PASSWORD | 数据库密码 | - |
 | JWT_SECRET | JWT密钥 | - |
 | PORT | 后端端口 | 8080 |
