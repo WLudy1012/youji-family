@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Table, Button, Modal, Form, Input, Tag, message, Popconfirm, Radio } from 'antd'
+import { Table, Button, Modal, Form, Input, Tag, message, Radio } from 'antd'
 import { CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function RegistrationRequests() {
   const [requests, setRequests] = useState<any[]>([])
@@ -19,7 +19,7 @@ export default function RegistrationRequests() {
   const loadRequests = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/admin/registration-requests', {
+      const res: any = await api.get('/api/admin/registration-requests', {
         params: { status: activeTab }
       })
       setRequests(res.data.data || [])
@@ -44,7 +44,7 @@ export default function RegistrationRequests() {
   const handleReviewSubmit = async () => {
     try {
       const values = await form.validateFields()
-      await axios.put(`/api/admin/registration-requests/${selectedRequest.id}`, values)
+      await api.put(`/api/admin/registration-requests/${selectedRequest.id}`, values)
       message.success('审核完成')
       setReviewModalVisible(false)
       loadRequests()

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Users, ChevronRight } from 'lucide-react'
+import { Users } from 'lucide-react'
 import { getMembers, getFamilyTree } from '../services/api'
 
 export default function Members() {
@@ -110,7 +110,7 @@ export default function Members() {
 function FamilyTreeView({ data }: { data: any }) {
   if (!data) return <div className="text-center text-gray-500">暂无族谱数据</div>
 
-  const { members, relationships } = data
+  const { members } = data
 
   // 按代数分组
   const byGeneration = members.reduce((acc: any, m: any) => {
