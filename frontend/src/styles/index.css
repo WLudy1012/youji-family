@@ -144,3 +144,50 @@ a:hover {
     font-size: 1.5rem;
   }
 }
+
+
+/* 氛围化视觉增强 */
+body {
+  background:
+    radial-gradient(circle at 10% 10%, rgba(130, 101, 199, 0.12), transparent 45%),
+    radial-gradient(circle at 90% 20%, rgba(201, 162, 39, 0.10), transparent 35%),
+    linear-gradient(180deg, #f7f3ff 0%, #eef2ff 45%, #f5f7fb 100%);
+}
+
+.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.18;
+}
+
+.card {
+  border: 1px solid rgba(130, 101, 199, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+}
+
+.btn {
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.18);
+}
+
+.page-title {
+  letter-spacing: 0.02em;
+}
+
+
+/* 补充常用 Tailwind 插件能力（未启用插件时兜底） */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+}

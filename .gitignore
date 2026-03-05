@@ -77,9 +77,6 @@ uploads/
 backups/
 **/backups/
 
-# 后端配置文件
-backend/src/config/database.js
-backend/src/config/upload.js
 
 # 前端构建目录
 app/build/
