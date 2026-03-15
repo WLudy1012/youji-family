@@ -169,7 +169,7 @@ const registerRequest = async (req, res, next) => {
 
     // 检查是否有待审核的申请
     const pendingRequest = await query(
-      'SELECT id FROM registration_requests WHERE username = ? AND status = "pending"',
+      "SELECT id FROM registration_requests WHERE username = ? AND status = 'pending'",
       [username]
     );
 
@@ -240,6 +240,14 @@ const reviewRegistration = async (req, res, next) => {
     const { id } = req.params;
     const { status, review_note } = req.body;
     const adminId = req.user.id;
+
+    if (!['approved', 'rejected'].includes(status)) {
+      await connection.rollback();
+      return res.status(400).json({
+        success: false,
+        message: '无效的审核状态'
+      });
+    }
 
     // 获取申请信息
     const [requests] = await connection.execute(

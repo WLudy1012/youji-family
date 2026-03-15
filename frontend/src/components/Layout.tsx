@@ -60,9 +60,9 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="app-shell min-h-screen flex flex-col">
       {/* 导航栏 */}
-      <header className="bg-[#1e3a5f] text-white shadow-lg sticky top-0 z-40">
+      <header className="bg-[#1e3a5f]/95 backdrop-blur text-white shadow-lg sticky top-0 z-40 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -184,12 +184,12 @@ export default function Layout() {
       </header>
 
       {/* 主内容区 */}
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-10">
         <Outlet />
       </main>
 
       {/* 页脚 */}
-      <footer className="bg-[#1e3a5f] text-white py-8">
+      <footer className="bg-[#14122a] text-white py-10 border-t border-white/10">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             {/* 关于 */}

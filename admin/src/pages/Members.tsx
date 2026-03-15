@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Select, DatePicker, message, Popconfirm } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, UserAddOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Members() {
   const [members, setMembers] = useState<any[]>([])
@@ -20,7 +20,7 @@ export default function Members() {
   const loadMembers = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/members', { params: { limit: 1000 } })
+      const res: any = await api.get('/api/members', { params: { limit: 1000 } })
       setMembers(res.data.data?.data || [])
     } catch (error) {
       message.error('加载成员失败')
@@ -47,7 +47,7 @@ export default function Members() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/members/${id}`)
+      await api.delete(`/api/admin/members/${id}`)
       message.success('删除成功')
       loadMembers()
     } catch (error) {
@@ -72,10 +72,10 @@ export default function Members() {
       }
 
       if (editingMember) {
-        await axios.put(`/api/admin/members/${editingMember.id}`, data)
+        await api.put(`/api/admin/members/${editingMember.id}`, data)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/members', data)
+        await api.post('/api/admin/members', data)
         message.success('创建成功')
       }
       
@@ -89,7 +89,7 @@ export default function Members() {
   const handleAccountModalOk = async () => {
     try {
       const values = await accountForm.validateFields()
-      await axios.post(`/api/admin/members/${selectedMemberId}/account`, values)
+      await api.post(`/api/admin/members/${selectedMemberId}/account`, values)
       message.success('账号创建成功')
       setAccountModalVisible(false)
     } catch (error) {
