@@ -19,6 +19,7 @@ const announcementController = require('../controllers/announcementController');
 const albumController = require('../controllers/albumController');
 const guestbookController = require('../controllers/guestbookController');
 const uploadController = require('../controllers/uploadController');
+const visitController = require('../controllers/visitController');
 
 // ==================== 公开接口 ====================
 
@@ -50,6 +51,9 @@ router.post('/guestbook', optionalAuth, guestbookController.createMessage);
 
 // 注册申请
 router.post('/auth/register', authController.registerRequest);
+
+// 访问统计埋点
+router.post('/visits/track', visitController.trackVisit);
 
 // ==================== 成员接口 ====================
 
@@ -104,6 +108,9 @@ router.delete('/admin/guestbook/:id', verifyAdminToken, guestbookController.dele
 // 注册申请管理
 router.get('/admin/registration-requests', verifyAdminToken, authController.getRegistrationRequests);
 router.put('/admin/registration-requests/:id', verifyAdminToken, authController.reviewRegistration);
+
+// 访问统计
+router.get('/admin/visits/stats', verifyAdminToken, visitController.getVisitStats);
 
 // 文件上传
 router.post('/admin/upload/image', 

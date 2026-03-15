@@ -1,7 +1,100 @@
-import { useEffect, useState } from 'react'
-import { Card, Row, Col, Statistic } from 'antd'
-import { TeamOutlined, FileTextOutlined, PictureOutlined, MessageOutlined } from '@ant-design/icons'
+import { useEffect, useMemo, useState } from 'react'
+import { Card, Row, Col, Statistic, Segmented, Empty } from 'antd'
+import { TeamOutlined, FileTextOutlined, PictureOutlined, MessageOutlined, LineChartOutlined, UserOutlined } from '@ant-design/icons'
 import api from '../services/api'
+
+type TrendPoint = {
+  label: string
+  count: number
+}
+
+type VisitStats = {
+  today: number
+  yesterday: number
+  last7Days: number
+  last30Days: number
+  totalUniqueVisitors: number
+}
+
+function VisitLineChart({ data }: { data: TrendPoint[] }) {
+  if (!data.length) return <Empty description="暂无统计数据" />
+
+  const width = 760
+  const height = 240
+  const padding = 28
+  const max = Math.max(...data.map((d) => d.count), 1)
+
+  const points = data
+    .map((item, index) => {
+      const x = padding + (index * (width - padding * 2)) / Math.max(data.length - 1, 1)
+      const y = height - padding - (item.count / max) * (height - padding * 2)
+      return `${x},${y}`
+    })
+    .join(' ')
+
+  return (
+    <div style={{ width: '100%' }}>
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 260 }}>
+        <defs>
+          <linearGradient id="visitArea" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#4ecdc4" stopOpacity="0.38" />
+            <stop offset="100%" stopColor="#4ecdc4" stopOpacity="0.05" />
+          </linearGradient>
+        </defs>
+
+        {data.map((item, index) => {
+          const y = height - padding - (item.count / max) * (height - padding * 2)
+          return (
+            <line
+              key={`grid-${index}`}
+              x1={padding}
+              x2={width - padding}
+              y1={y}
+              y2={y}
+              stroke="rgba(69,183,209,0.15)"
+              strokeDasharray="3 4"
+            />
+          )
+        })}
+
+        <polyline
+          fill="url(#visitArea)"
+          stroke="none"
+          points={`${padding},${height - padding} ${points} ${width - padding},${height - padding}`}
+        />
+
+        <polyline
+          fill="none"
+          stroke="#45B7D1"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          points={points}
+        />
+
+        {data.map((item, index) => {
+          const x = padding + (index * (width - padding * 2)) / Math.max(data.length - 1, 1)
+          const y = height - padding - (item.count / max) * (height - padding * 2)
+          return (
+            <g key={`point-${item.label}-${index}`}>
+              <circle cx={x} cy={y} r="4" fill="#FF6B6B" />
+            </g>
+          )
+        })}
+      </svg>
+
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(data.length, 8)}, 1fr)`, gap: 8, marginTop: 8 }}>
+        {data
+          .filter((_, idx) => idx % Math.ceil(data.length / 8 || 1) === 0)
+          .map((item) => (
+            <div key={`label-${item.label}`} style={{ fontSize: 12, color: '#5f6c7b' }}>
+              {item.label}
+            </div>
+          ))}
+      </div>
+    </div>
+  )
+}
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -10,6 +103,19 @@ export default function Dashboard() {
     albums: 0,
     messages: 0
   })
+  const [visitStats, setVisitStats] = useState<VisitStats>({
+    today: 0,
+    yesterday: 0,
+    last7Days: 0,
+    last30Days: 0,
+    totalUniqueVisitors: 0
+  })
+  const [visitTrends, setVisitTrends] = useState({
+    last24Hours: [] as TrendPoint[],
+    last7Days: [] as TrendPoint[],
+    last30Days: [] as TrendPoint[]
+  })
+  const [period, setPeriod] = useState<'24h' | '7d' | '30d'>('7d')
 
   useEffect(() => {
     loadStats()
@@ -17,12 +123,12 @@ export default function Dashboard() {
 
   const loadStats = async () => {
     try {
-      // 并行加载统计数据
-      const [membersRes, articlesRes, albumsRes, messagesRes] = await Promise.all([
+      const [membersRes, articlesRes, albumsRes, messagesRes, visitsRes] = await Promise.all([
         api.get('/api/members', { params: { limit: 1 } }),
         api.get('/api/articles', { params: { limit: 1 } }),
         api.get('/api/albums', { params: { limit: 1 } }),
-        api.get('/api/admin/guestbook', { params: { limit: 1 } })
+        api.get('/api/admin/guestbook', { params: { limit: 1 } }),
+        api.get('/api/admin/visits/stats')
       ])
 
       setStats({
@@ -31,59 +137,89 @@ export default function Dashboard() {
         albums: albumsRes.data.data?.pagination?.total || 0,
         messages: messagesRes.data.data?.pagination?.total || 0
       })
+
+      setVisitStats(visitsRes.data.data?.summary || visitStats)
+      setVisitTrends(visitsRes.data.data?.trends || visitTrends)
     } catch (error) {
       console.error('加载统计数据失败:', error)
     }
   }
 
+  const selectedTrend = useMemo(() => {
+    if (period === '24h') return visitTrends.last24Hours
+    if (period === '30d') return visitTrends.last30Days
+    return visitTrends.last7Days
+  }, [period, visitTrends])
+
   return (
     <div>
       <h2 style={{ marginBottom: 24 }}>控制台</h2>
-      
+
       <Row gutter={16}>
         <Col span={6}>
           <Card>
-            <Statistic
-              title="家族成员"
-              value={stats.members}
-              prefix={<TeamOutlined />}
-              valueStyle={{ color: '#1e3a5f' }}
-            />
+            <Statistic title="家族成员" value={stats.members} prefix={<TeamOutlined />} valueStyle={{ color: '#45B7D1' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic
-              title="文章数量"
-              value={stats.articles}
-              prefix={<FileTextOutlined />}
-              valueStyle={{ color: '#52c41a' }}
-            />
+            <Statistic title="文章数量" value={stats.articles} prefix={<FileTextOutlined />} valueStyle={{ color: '#4ECDC4' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic
-              title="相册数量"
-              value={stats.albums}
-              prefix={<PictureOutlined />}
-              valueStyle={{ color: '#faad14' }}
-            />
+            <Statistic title="相册数量" value={stats.albums} prefix={<PictureOutlined />} valueStyle={{ color: '#F9C80E' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic
-              title="留言数量"
-              value={stats.messages}
-              prefix={<MessageOutlined />}
-              valueStyle={{ color: '#eb2f96' }}
-            />
+            <Statistic title="留言数量" value={stats.messages} prefix={<MessageOutlined />} valueStyle={{ color: '#FF6B6B' }} />
           </Card>
         </Col>
       </Row>
 
-      <Card style={{ marginTop: 24 }} title="欢迎使用由基家族管理后台">
+      <Row gutter={16} style={{ marginTop: 16 }}>
+        <Col span={6}>
+          <Card>
+            <Statistic title="今日访问人数" value={visitStats.today} prefix={<UserOutlined />} valueStyle={{ color: '#4ECDC4' }} />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic title="昨日访问人数" value={visitStats.yesterday} valueStyle={{ color: '#45B7D1' }} />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic title="近7天访问人数" value={visitStats.last7Days} valueStyle={{ color: '#FF6B6B' }} />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic title="累计访问人数" value={visitStats.totalUniqueVisitors} valueStyle={{ color: '#9B5DE5' }} />
+          </Card>
+        </Col>
+      </Row>
+
+      <Card
+        style={{ marginTop: 24 }}
+        title="访问趋势统计图"
+        extra={
+          <Segmented
+            options={[
+              { label: '近24小时', value: '24h' },
+              { label: '近7天', value: '7d' },
+              { label: '近30天', value: '30d' }
+            ]}
+            value={period}
+            onChange={(value) => setPeriod(value as '24h' | '7d' | '30d')}
+          />
+        }
+      >
+        <VisitLineChart data={selectedTrend} />
+      </Card>
+
+      <Card style={{ marginTop: 24 }} title="欢迎使用由基家族管理后台" extra={<LineChartOutlined />}>
         <p>在这里您可以：</p>
         <ul style={{ paddingLeft: 20, lineHeight: 2 }}>
           <li>管理家族成员信息和关系</li>
@@ -91,7 +227,7 @@ export default function Dashboard() {
           <li>管理家族相册</li>
           <li>发布公告通知</li>
           <li>审核留言板内容</li>
-          <li>配置站点信息</li>
+          <li>查看访问统计趋势与分时段数据</li>
         </ul>
       </Card>
     </div>

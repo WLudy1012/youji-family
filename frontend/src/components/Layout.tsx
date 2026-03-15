@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Users, BookOpen, Image, MessageSquare, Bell, Home, Menu, X, LogIn, LogOut, User } from 'lucide-react'
-import { getConfigs } from '../services/api'
+import { getConfigs, trackVisit } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 import LoginModal from './LoginModal'
 
@@ -9,6 +9,16 @@ interface SiteConfig {
   site_name: string
   site_logo: string
   footer_copyright: string
+}
+
+const ensureVisitorId = () => {
+  const key = 'visitor_id'
+  const existing = localStorage.getItem(key)
+  if (existing) return existing
+
+  const generated = `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`
+  localStorage.setItem(key, generated)
+  return generated
 }
 
 export default function Layout() {
@@ -22,6 +32,13 @@ export default function Layout() {
   useEffect(() => {
     loadConfig()
   }, [])
+
+  useEffect(() => {
+    const visitorId = ensureVisitorId()
+    trackVisit({ visitorId, path: location.pathname }).catch(() => {
+      // 访问统计失败不影响主流程
+    })
+  }, [location.pathname])
 
   const loadConfig = async () => {
     try {

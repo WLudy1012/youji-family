@@ -120,6 +120,19 @@ CREATE TABLE IF NOT EXISTS site_configs (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+CREATE TABLE IF NOT EXISTS page_visits (
+  id SERIAL PRIMARY KEY,
+  visitor_id VARCHAR(64) NOT NULL,
+  visit_path VARCHAR(255) NOT NULL DEFAULT '/',
+  ip_address VARCHAR(45),
+  user_agent VARCHAR(255),
+  visited_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  visit_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  visit_hour SMALLINT NOT NULL DEFAULT EXTRACT(HOUR FROM CURRENT_TIMESTAMP),
+  UNIQUE(visitor_id, visit_date, visit_hour, visit_path)
+);
+
 CREATE TABLE IF NOT EXISTS registration_requests (
   id SERIAL PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
