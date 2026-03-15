@@ -5,15 +5,21 @@
 }
 
 :root {
-  --admin-bg: #f7f9fc;
+  --primary: #4ECDC4;    /* 主色调-青绿 */
+  --secondary: #45B7D1;  /* 辅色调-蓝色 */
+  --accent: #FF6B6B;     /* 点睛色-珊瑚红 */
+  --background: #F7F9FC; /* 背景色-柔白 */
+  --text: #2D3748;       /* 文字色-深灰 */
+
+  --admin-bg: var(--background);
   --admin-surface: rgba(255, 255, 255, 0.78);
   --admin-surface-2: rgba(237, 242, 247, 0.78);
-  --admin-primary: #4ecdc4;
-  --admin-coral: #ff6b6b;
-  --admin-blue: #45b7d1;
+  --admin-primary: var(--primary);
+  --admin-coral: var(--accent);
+  --admin-blue: var(--secondary);
   --admin-yellow: #f9c80e;
   --admin-purple: #9b5de5;
-  --admin-text: #2f3b4a;
+  --admin-text: var(--text);
 }
 
 body {
@@ -21,7 +27,7 @@ body {
   background:
     radial-gradient(circle at 0 0, rgba(78, 205, 196, 0.18), transparent 35%),
     linear-gradient(160deg, #f7f9fc, #edf2f7);
-  color: var(--admin-text);
+  color: var(--text);
 }
 
 #root { min-height: 100vh; }
