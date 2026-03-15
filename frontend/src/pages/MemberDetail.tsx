@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Users, Calendar, MapPin, Phone, Mail, ChevronLeft, User } from 'lucide-react'
+import { Calendar, MapPin, Phone, Mail, ChevronLeft, User } from 'lucide-react'
 import { getMember } from '../services/api'
 
 export default function MemberDetail() {
