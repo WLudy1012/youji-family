@@ -4,25 +4,83 @@
   box-sizing: border-box;
 }
 
+:root {
+  --admin-bg: #f7f9fc;
+  --admin-surface: rgba(255, 255, 255, 0.78);
+  --admin-surface-2: rgba(237, 242, 247, 0.78);
+  --admin-primary: #4ecdc4;
+  --admin-coral: #ff6b6b;
+  --admin-blue: #45b7d1;
+  --admin-yellow: #f9c80e;
+  --admin-purple: #9b5de5;
+  --admin-text: #2f3b4a;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background:
+    radial-gradient(circle at 0 0, rgba(78, 205, 196, 0.18), transparent 35%),
+    linear-gradient(160deg, #f7f9fc, #edf2f7);
+  color: var(--admin-text);
 }
 
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+#root { min-height: 100vh; }
+
+.ant-layout, .ant-layout-content { background: transparent !important; }
+
+.ant-card {
+  background: var(--admin-surface) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 10px 28px rgba(69, 183, 209, 0.12);
+  backdrop-filter: blur(12px);
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.ant-card .ant-card-head-title,
+.ant-card .ant-card-body,
+.ant-table,
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td,
+.ant-statistic-title,
+.ant-statistic-content,
+h1,h2,h3,h4,p,span,li,label, .ant-typography {
+  color: var(--admin-text);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
+.ant-table-wrapper .ant-table { background: transparent !important; }
+.ant-table-thead > tr > th {
+  background: rgba(69, 183, 209, 0.16) !important;
+  border-bottom: 1px solid rgba(69, 183, 209, 0.24) !important;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(47, 59, 74, 0.10) !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #999;
+.ant-btn-primary {
+  background: linear-gradient(135deg, #4ecdc4, #45b7d1) !important;
+  border-color: #4ecdc4 !important;
+  color: #ffffff !important;
+  font-weight: 600;
 }
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #43bbb3, #399eb6) !important;
+}
+
+.ant-modal-content {
+  background: rgba(255, 255, 255, 0.84) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+}
+.ant-modal-title {
+  background: transparent !important;
+  color: #2f6fa3 !important;
+}
+
+.ant-tag-gold {
+  color: #a07d08 !important;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #e7eef7; }
+::-webkit-scrollbar-thumb { background: #45b7d1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3699b0; }
