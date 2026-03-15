@@ -60,9 +60,9 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="app-shell min-h-screen flex flex-col">
       {/* 导航栏 */}
-      <header className="bg-[#1e3a5f] text-white shadow-lg sticky top-0 z-40">
+      <header className="bg-[#5a4b3a]/95 backdrop-blur text-white shadow-lg sticky top-0 z-40 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -81,7 +81,7 @@ export default function Layout() {
                   to={item.path}
                   className={`flex items-center space-x-1 px-4 py-2 rounded-lg transition-colors ${
                     isActive(item.path)
-                      ? 'bg-[#c9a227] text-white'
+                      ? 'bg-[#b78f5f] text-white'
                       : 'hover:bg-white/10'
                   }`}
                 >
@@ -96,7 +96,7 @@ export default function Layout() {
               {isLoggedIn ? (
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-[#c9a227] rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-[#b78f5f] rounded-full flex items-center justify-center">
                       <User className="w-4 h-4" />
                     </div>
                     <span className="text-sm">{user?.member_name || user?.username}</span>
@@ -112,7 +112,7 @@ export default function Layout() {
               ) : (
                 <button
                   onClick={() => setLoginModalOpen(true)}
-                  className="flex items-center space-x-1 px-4 py-2 bg-[#c9a227] hover:bg-[#d4b43a] rounded-lg transition-colors"
+                  className="flex items-center space-x-1 px-4 py-2 bg-[#b78f5f] hover:bg-[#c29b6a] rounded-lg transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>登录</span>
@@ -123,7 +123,7 @@ export default function Layout() {
             {/* 移动端菜单按钮 */}
             <div className="flex items-center space-x-2 md:hidden">
               {isLoggedIn && (
-                <div className="w-8 h-8 bg-[#c9a227] rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#b78f5f] rounded-full flex items-center justify-center">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -139,14 +139,14 @@ export default function Layout() {
 
         {/* 移动端导航 */}
         {mobileMenuOpen && (
-          <nav className="md:hidden bg-[#152a45] border-t border-white/10">
+          <nav className="md:hidden bg-[#4a3f32] border-t border-white/10">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`flex items-center space-x-2 px-4 py-3 ${
                   isActive(item.path)
-                    ? 'bg-[#c9a227] text-white'
+                    ? 'bg-[#b78f5f] text-white'
                     : 'hover:bg-white/10'
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
@@ -173,7 +173,7 @@ export default function Layout() {
                   setLoginModalOpen(true)
                   setMobileMenuOpen(false)
                 }}
-                className="w-full flex items-center space-x-2 px-4 py-3 text-[#c9a227] hover:bg-white/10"
+                className="w-full flex items-center space-x-2 px-4 py-3 text-[#b78f5f] hover:bg-white/10"
               >
                 <LogIn className="w-5 h-5" />
                 <span>登录 / 注册</span>
@@ -184,12 +184,12 @@ export default function Layout() {
       </header>
 
       {/* 主内容区 */}
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-10">
         <Outlet />
       </main>
 
       {/* 页脚 */}
-      <footer className="bg-[#1e3a5f] text-white py-8">
+      <footer className="bg-[#352e27] text-white py-10 border-t border-white/10">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             {/* 关于 */}
@@ -207,13 +207,13 @@ export default function Layout() {
                 {allNavItems.map((item) => (
                   <li key={item.path}>
                     {isLoggedIn || item.path === '/' ? (
-                      <Link to={item.path} className="text-white/70 hover:text-[#c9a227]">
+                      <Link to={item.path} className="text-white/70 hover:text-[#b78f5f]">
                         {item.label}
                       </Link>
                     ) : (
                       <span 
                         onClick={() => setLoginModalOpen(true)}
-                        className="text-white/40 cursor-pointer hover:text-[#c9a227]"
+                        className="text-white/40 cursor-pointer hover:text-[#b78f5f]"
                       >
                         {item.label} (需登录)
                       </span>
@@ -232,7 +232,7 @@ export default function Layout() {
               {!isLoggedIn && (
                 <button
                   onClick={() => setLoginModalOpen(true)}
-                  className="mt-4 px-4 py-2 bg-[#c9a227] hover:bg-[#d4b43a] rounded-lg text-sm transition-colors"
+                  className="mt-4 px-4 py-2 bg-[#b78f5f] hover:bg-[#c29b6a] rounded-lg text-sm transition-colors"
                 >
                   登录 / 注册
                 </button>

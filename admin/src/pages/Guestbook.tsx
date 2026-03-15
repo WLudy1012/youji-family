@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Tag, message, Popconfirm } from 'antd'
 import { CheckOutlined, DeleteOutlined, MessageOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Guestbook() {
   const [messages, setMessages] = useState<any[]>([])
@@ -17,7 +17,7 @@ export default function Guestbook() {
   const loadMessages = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/admin/guestbook', { params: { limit: 1000 } })
+      const res: any = await api.get('/api/admin/guestbook', { params: { limit: 1000 } })
       setMessages(res.data.data?.data || [])
     } catch (error) {
       message.error('加载留言失败')
@@ -28,7 +28,7 @@ export default function Guestbook() {
 
   const handleApprove = async (id: number, isApproved: number) => {
     try {
-      await axios.put(`/api/admin/guestbook/${id}/approve`, { is_approved: isApproved })
+      await api.put(`/api/admin/guestbook/${id}/approve`, { is_approved: isApproved })
       message.success(isApproved ? '已通过审核' : '已取消审核')
       loadMessages()
     } catch (error) {
@@ -45,7 +45,7 @@ export default function Guestbook() {
   const handleReplySubmit = async () => {
     try {
       const values = await form.validateFields()
-      await axios.put(`/api/admin/guestbook/${selectedMessage.id}/reply`, values)
+      await api.put(`/api/admin/guestbook/${selectedMessage.id}/reply`, values)
       message.success('回复成功')
       setReplyModalVisible(false)
       loadMessages()
@@ -56,7 +56,7 @@ export default function Guestbook() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/guestbook/${id}`)
+      await api.delete(`/api/admin/guestbook/${id}`)
       message.success('删除成功')
       loadMessages()
     } catch (error) {

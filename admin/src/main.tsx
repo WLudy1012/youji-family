@@ -8,7 +8,21 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          colorPrimary: '#6b745d',
+          colorInfo: '#6b745d',
+          colorSuccess: '#86a174',
+          colorWarning: '#c29b6a',
+          colorError: '#ff7875',
+          colorBgBase: '#f2ece1',
+          colorTextBase: '#3c342c',
+          borderRadius: 10
+        }
+      }}
+    >
       <BrowserRouter>
         <App />
       </BrowserRouter>
