@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Form, Input, Button, message, Card, Tabs, ColorPicker } from 'antd'
-import axios from 'axios'
+import { Form, Input, Button, message, Card, Tabs, Spin } from 'antd'
+import api from '../services/api'
 
 export default function Settings() {
   const [form] = Form.useForm()
@@ -14,7 +14,7 @@ export default function Settings() {
   const loadSettings = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/admin/configs')
+      const res: any = await api.get('/api/admin/configs')
       if (res.data.success) {
         form.setFieldsValue(res.data.data)
       }
@@ -29,7 +29,7 @@ export default function Settings() {
     try {
       setSaving(true)
       const values = await form.validateFields()
-      await axios.put('/api/admin/configs', values)
+      await api.put('/api/admin/configs', values)
       message.success('保存成功')
     } catch (error) {
       message.error('保存失败')
@@ -43,7 +43,7 @@ export default function Settings() {
       key: 'basic',
       label: '基本设置',
       children: (
-        <Form form={form} layout="vertical" loading={loading}>
+        <Form form={form} layout="vertical">
           <Form.Item name="site_name" label="站点名称" rules={[{ required: true }]}>
             <Input placeholder="由基家族" />
           </Form.Item>
@@ -114,7 +114,9 @@ export default function Settings() {
       </div>
 
       <Card>
-        <Tabs items={items} />
+        <Spin spinning={loading}>
+          <Tabs items={items} />
+        </Spin>
       </Card>
 
       <div style={{ marginTop: 16, textAlign: 'center' }}>
