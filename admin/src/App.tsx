@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import { Layout, Menu, Button, message, Avatar, Dropdown } from 'antd'
+import { useState } from 'react'
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import { Layout, Menu, Button, Avatar, Dropdown } from 'antd'
 import {
   DashboardOutlined,
   TeamOutlined,
@@ -48,6 +48,7 @@ const logout = () => {
 // 主布局组件
 function MainLayout() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const userInfo = getUserInfo()
 
@@ -67,20 +68,20 @@ function MainLayout() {
   ]
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh', background: 'transparent' }}>
       <Sider
         trigger={null}
         collapsible
         collapsed={collapsed}
         theme="dark"
-        style={{ background: '#1e3a5f' }}
+        style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.62), rgba(240,246,255,0.58))', borderRight: '1px solid rgba(255,255,255,0.66)', backdropFilter: 'blur(12px)' }}
       >
         <div style={{ 
           height: 64, 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          color: '#c9a227',
+          color: '#5b7ea9',
           fontSize: collapsed ? 14 : 18,
           fontWeight: 'bold',
           borderBottom: '1px solid rgba(255,255,255,0.1)'
@@ -90,20 +91,20 @@ function MainLayout() {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={[window.location.pathname]}
-          style={{ background: '#1e3a5f' }}
+          selectedKeys={[location.pathname]}
+          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.62), rgba(240,246,255,0.58))', borderRight: '1px solid rgba(255,255,255,0.66)', backdropFilter: 'blur(12px)' }}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
         />
       </Sider>
       <Layout>
         <Header style={{ 
-          background: '#fff', 
+          background: 'rgba(255, 255, 255, 0.58)', 
           padding: '0 24px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.1)'
+          boxShadow: '0 8px 24px rgba(71, 93, 129, 0.12)', borderBottom: '1px solid rgba(255,255,255,0.62)', backdropFilter: 'blur(12px)'
         }}>
           <Button
             type="text"
@@ -114,13 +115,13 @@ function MainLayout() {
           </Button>
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Avatar icon={<UserOutlined />} style={{ background: '#1e3a5f' }} />
-              <span>{userInfo?.username || '管理员'}</span>
+              <Avatar icon={<UserOutlined />} style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.62), rgba(240,246,255,0.58))', borderRight: '1px solid rgba(255,255,255,0.66)', backdropFilter: 'blur(12px)' }} />
+              <span style={{ color: '#45678f' }}>{userInfo?.username || '管理员'}</span>
               <DownOutlined style={{ fontSize: 12 }} />
             </div>
           </Dropdown>
         </Header>
-        <Content style={{ margin: 24, padding: 24, background: '#fff', borderRadius: 8, overflow: 'auto' }}>
+        <Content style={{ margin: 24, padding: 24, background: 'rgba(255, 255, 255, 0.58)', borderRadius: 8, overflow: 'auto' }}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/registration-requests" element={<RegistrationRequests />} />

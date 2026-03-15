@@ -4,25 +4,77 @@
   box-sizing: border-box;
 }
 
+:root {
+  --admin-bg: #e7edf6;
+  --admin-surface: rgba(255,255,255,.62);
+  --admin-surface-2: rgba(247,250,255,.66);
+  --admin-accent: #6f8fbc;
+  --admin-accent-soft: #8aa6cb;
+  --admin-gold: #dfc07a;
+  --admin-text: #2b3b52;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background:
+    radial-gradient(circle at 0 0, rgba(130, 158, 198, 0.18), transparent 35%),
+    linear-gradient(160deg, #eaf0f8, #d9e3f1);
+  color: var(--admin-text);
 }
 
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+#root { min-height: 100vh; }
+
+.ant-layout, .ant-layout-content { background: transparent !important; }
+
+.ant-card {
+  background: var(--admin-surface) !important;
+  border: 1px solid rgba(255,255,255,0.62) !important;
+  box-shadow: 0 10px 28px rgba(51, 75, 113, .12);
+  backdrop-filter: blur(12px);
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.ant-card .ant-card-head-title,
+.ant-card .ant-card-body,
+.ant-table,
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td,
+.ant-statistic-title,
+.ant-statistic-content,
+h1,h2,h3,h4,p,span,li,label, .ant-typography {
+  color: var(--admin-text);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
+.ant-table-wrapper .ant-table { background: transparent !important; }
+.ant-table-thead > tr > th {
+  background: rgba(140, 167, 205, 0.18) !important;
+  border-bottom: 1px solid rgba(111, 143, 188, 0.25) !important;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(43,59,82,.08) !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #999;
+.ant-btn-primary {
+  background: linear-gradient(135deg, #6f8fbc, #5d7faa) !important;
+  border-color: #6f8fbc !important;
+  color: #ffffff !important;
+  font-weight: 600;
 }
+
+.ant-modal-content {
+  background: rgba(255,255,255,.72) !important;
+  border: 1px solid rgba(255,255,255,.68);
+  backdrop-filter: blur(12px);
+}
+.ant-modal-title {
+  background: transparent !important;
+  color: #355179 !important;
+}
+
+.ant-tag-gold {
+  color: #6f5620 !important;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #dde6f3; }
+::-webkit-scrollbar-thumb { background: #9db1cf; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #7f98bb; }
