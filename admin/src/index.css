@@ -4,25 +4,89 @@
   box-sizing: border-box;
 }
 
+:root {
+  --primary: #06D6A0;    /* 主色调-翠绿 */
+  --secondary: #118AB2;  /* 辅色调-天蓝 */
+  --accent: #EF476F;     /* 点睛色-粉红 */
+  --background: #F8F9FA; /* 背景色-纯白 */
+  --text: #073B4C;       /* 文字色-墨蓝 */
+
+  --admin-bg: var(--background);
+  --admin-surface: rgba(255, 255, 255, 0.78);
+  --admin-surface-2: rgba(237, 242, 247, 0.78);
+  --admin-primary: var(--primary);
+  --admin-coral: var(--accent);
+  --admin-blue: var(--secondary);
+  --admin-yellow: var(--accent);
+  --admin-purple: var(--secondary);
+  --admin-text: var(--text);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background:
+    radial-gradient(circle at 0 0, rgba(78, 205, 196, 0.18), transparent 35%),
+    linear-gradient(160deg, var(--background), color-mix(in srgb, var(--secondary) 12%, white));
+  color: var(--text);
 }
 
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+#root { min-height: 100vh; }
+
+.ant-layout, .ant-layout-content { background: transparent !important; }
+
+.ant-card {
+  background: var(--admin-surface) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 10px 28px rgba(69, 183, 209, 0.12);
+  backdrop-filter: blur(12px);
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.ant-card .ant-card-head-title,
+.ant-card .ant-card-body,
+.ant-table,
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td,
+.ant-statistic-title,
+.ant-statistic-content,
+h1,h2,h3,h4,p,span,li,label, .ant-typography {
+  color: var(--admin-text);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
+.ant-table-wrapper .ant-table { background: transparent !important; }
+.ant-table-thead > tr > th {
+  background: rgba(69, 183, 209, 0.16) !important;
+  border-bottom: 1px solid rgba(69, 183, 209, 0.24) !important;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(47, 59, 74, 0.10) !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #999;
+.ant-btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+  font-weight: 600;
 }
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 86%, black), color-mix(in srgb, var(--secondary) 86%, black)) !important;
+}
+
+.ant-modal-content {
+  background: rgba(255, 255, 255, 0.84) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+}
+.ant-modal-title {
+  background: transparent !important;
+  color: var(--secondary) !important;
+}
+
+.ant-tag-gold {
+  color: #a07d08 !important;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #e7eef7; }
+::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3699b0; }

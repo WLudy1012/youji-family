@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button, Card, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -11,7 +11,7 @@ export default function Login() {
   const onFinish = async (values: any) => {
     try {
       setLoading(true)
-      const res: any = await axios.post('/api/auth/admin/login', values)
+      const res: any = await api.post('/api/auth/admin/login', values)
       
       if (res.data.success) {
         localStorage.setItem('admin_token', res.data.data.token)
@@ -34,11 +34,11 @@ export default function Login() {
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%)'
+      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
     }}>
       <Card style={{ width: 400, borderRadius: 8 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <h1 style={{ color: '#1e3a5f', margin: 0 }}>由基家族</h1>
+          <h1 style={{ color: 'var(--primary)', margin: 0 }}>由基家族</h1>
           <p style={{ color: '#666', margin: '8px 0 0' }}>管理后台登录</p>
         </div>
         
@@ -74,7 +74,7 @@ export default function Login() {
               htmlType="submit" 
               loading={loading}
               block
-              style={{ background: '#1e3a5f' }}
+              style={{ background: 'var(--primary)' }}
             >
               登录
             </Button>

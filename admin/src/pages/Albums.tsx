@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Form, Input, Upload, message, Popconfirm, Image } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import api from '../services/api'
 
 export default function Albums() {
   const [albums, setAlbums] = useState<any[]>([])
@@ -19,7 +19,7 @@ export default function Albums() {
   const loadAlbums = async () => {
     try {
       setLoading(true)
-      const res: any = await axios.get('/api/albums', { params: { limit: 1000 } })
+      const res: any = await api.get('/api/albums', { params: { limit: 1000 } })
       setAlbums(res.data.data?.data || [])
     } catch (error) {
       message.error('加载相册失败')
@@ -42,7 +42,7 @@ export default function Albums() {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/admin/albums/${id}`)
+      await api.delete(`/api/admin/albums/${id}`)
       message.success('删除成功')
       loadAlbums()
     } catch (error) {
@@ -52,7 +52,7 @@ export default function Albums() {
 
   const handleView = async (record: any) => {
     try {
-      const res: any = await axios.get(`/api/albums/${record.id}`)
+      const res: any = await api.get(`/api/albums/${record.id}`)
       setSelectedAlbum(res.data.data)
       setDetailModalVisible(true)
     } catch (error) {
@@ -65,10 +65,10 @@ export default function Albums() {
       const values = await form.validateFields()
 
       if (editingAlbum) {
-        await axios.put(`/api/admin/albums/${editingAlbum.id}`, values)
+        await api.put(`/api/admin/albums/${editingAlbum.id}`, values)
         message.success('更新成功')
       } else {
-        await axios.post('/api/admin/albums', values)
+        await api.post('/api/admin/albums', values)
         message.success('创建成功')
       }
 
@@ -156,7 +156,7 @@ export default function Albums() {
             if (info.file.status === 'done') {
               message.success(`${info.file.name} 上传成功`)
               // 添加到相册
-              axios.post(`/api/admin/albums/${selectedAlbum.id}/images`, {
+              api.post(`/api/admin/albums/${selectedAlbum.id}/images`, {
                 image_path: info.file.response.data.url
               })
             }
