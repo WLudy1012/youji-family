@@ -16,28 +16,29 @@ export interface ThemeConfigInput {
 
 const THEME_MODE_KEY = 'admin_theme_mode'
 const THEME_COLORS_KEY = 'admin_theme_colors'
+export const ADMIN_THEME_EVENT = 'admin-theme-change'
 
 const PRESET_PALETTES: Record<ThemeMode, Omit<ThemePalette, 'mode'>> = {
   ocean: {
-    primary: '#06D6A0',
-    secondary: '#118AB2',
-    accent: '#EF476F',
-    background: '#F8F9FA',
-    text: '#073B4C'
+    primary: '#1677FF',
+    secondary: '#13C2C2',
+    accent: '#FF9F1C',
+    background: '#F3F8FF',
+    text: '#102A43'
   },
   emerald: {
-    primary: '#1FA67A',
-    secondary: '#2D6A4F',
-    accent: '#F77F00',
-    background: '#F3FBF7',
-    text: '#1B4332'
+    primary: '#2F855A',
+    secondary: '#68D391',
+    accent: '#D69E2E',
+    background: '#F4FBF6',
+    text: '#1C4532'
   },
   sunset: {
-    primary: '#FF7F50',
-    secondary: '#6C63FF',
-    accent: '#F94144',
-    background: '#FFF8F2',
-    text: '#3A3A5A'
+    primary: '#D97706',
+    secondary: '#E11D48',
+    accent: '#7C3AED',
+    background: '#FFF7ED',
+    text: '#4A2C2A'
   }
 }
 
@@ -96,6 +97,7 @@ export const applyTheme = (palette: ThemePalette) => {
   root.style.setProperty('--accent', palette.accent)
   root.style.setProperty('--background', palette.background)
   root.style.setProperty('--text', palette.text)
+  window.dispatchEvent(new CustomEvent<ThemePalette>(ADMIN_THEME_EVENT, { detail: palette }))
 }
 
 export const rememberTheme = (input: { mode: ThemeMode; primary: string; secondary: string }) => {
@@ -119,3 +121,5 @@ export const bootstrapTheme = () => {
   const palette = buildTheme()
   applyTheme(palette)
 }
+
+export const getCurrentTheme = () => buildTheme()

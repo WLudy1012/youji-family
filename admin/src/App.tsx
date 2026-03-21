@@ -73,7 +73,7 @@ function MainLayout() {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        theme="dark"
+        theme="light"
         style={{ background: 'linear-gradient(180deg, rgba(247,249,252,0.86), rgba(237,242,247,0.84))', borderRight: '1px solid rgba(255,255,255,0.66)', backdropFilter: 'blur(12px)' }}
       >
         <div style={{ 
@@ -89,7 +89,7 @@ function MainLayout() {
           {collapsed ? '由基' : '由基家族后台'}
         </div>
         <Menu
-          theme="dark"
+          theme="light"
           mode="inline"
           selectedKeys={[location.pathname]}
           style={{ background: 'linear-gradient(180deg, rgba(247,249,252,0.86), rgba(237,242,247,0.84))', borderRight: '1px solid rgba(255,255,255,0.66)', backdropFilter: 'blur(12px)' }}

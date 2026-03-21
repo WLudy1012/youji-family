@@ -5,39 +5,45 @@
 }
 
 :root {
-  --primary: #06D6A0;    /* 主色调-翠绿 */
-  --secondary: #118AB2;  /* 辅色调-天蓝 */
-  --accent: #EF476F;     /* 点睛色-粉红 */
-  --background: #F8F9FA; /* 背景色-纯白 */
-  --text: #073B4C;       /* 文字色-墨蓝 */
+  --primary: #1677FF;
+  --secondary: #13C2C2;
+  --accent: #FF9F1C;
+  --background: #F3F8FF;
+  --text: #102A43;
 
   --admin-bg: var(--background);
   --admin-surface: rgba(255, 255, 255, 0.78);
-  --admin-surface-2: rgba(237, 242, 247, 0.78);
+  --admin-surface-2: rgba(241, 246, 255, 0.82);
   --admin-primary: var(--primary);
   --admin-coral: var(--accent);
   --admin-blue: var(--secondary);
   --admin-yellow: var(--accent);
-  --admin-purple: var(--secondary);
+  --admin-purple: color-mix(in srgb, var(--primary) 60%, var(--accent));
   --admin-text: var(--text);
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background:
-    radial-gradient(circle at 0 0, rgba(78, 205, 196, 0.18), transparent 35%),
-    linear-gradient(160deg, var(--background), color-mix(in srgb, var(--secondary) 12%, white));
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--secondary) 22%, transparent), transparent 35%),
+    radial-gradient(circle at 100% 10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 28%),
+    linear-gradient(160deg, var(--background), color-mix(in srgb, var(--secondary) 10%, white));
   color: var(--text);
 }
 
-#root { min-height: 100vh; }
+#root {
+  min-height: 100vh;
+}
 
-.ant-layout, .ant-layout-content { background: transparent !important; }
+.ant-layout,
+.ant-layout-content {
+  background: transparent !important;
+}
 
 .ant-card {
   background: var(--admin-surface) !important;
   border: 1px solid rgba(255, 255, 255, 0.72) !important;
-  box-shadow: 0 10px 28px rgba(69, 183, 209, 0.12);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--secondary) 18%, transparent);
   backdrop-filter: blur(12px);
 }
 
@@ -48,17 +54,29 @@ body {
 .ant-table-tbody > tr > td,
 .ant-statistic-title,
 .ant-statistic-content,
-h1,h2,h3,h4,p,span,li,label, .ant-typography {
+h1,
+h2,
+h3,
+h4,
+p,
+span,
+li,
+label,
+.ant-typography {
   color: var(--admin-text);
 }
 
-.ant-table-wrapper .ant-table { background: transparent !important; }
-.ant-table-thead > tr > th {
-  background: rgba(69, 183, 209, 0.16) !important;
-  border-bottom: 1px solid rgba(69, 183, 209, 0.24) !important;
+.ant-table-wrapper .ant-table {
+  background: transparent !important;
 }
+
+.ant-table-thead > tr > th {
+  background: color-mix(in srgb, var(--secondary) 14%, white) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--secondary) 24%, transparent) !important;
+}
+
 .ant-table-tbody > tr > td {
-  border-bottom: 1px solid rgba(47, 59, 74, 0.10) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent) !important;
 }
 
 .ant-btn-primary {
@@ -69,7 +87,17 @@ h1,h2,h3,h4,p,span,li,label, .ant-typography {
 }
 
 .ant-btn-primary:hover {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 86%, black), color-mix(in srgb, var(--secondary) 86%, black)) !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary) 86%, black),
+    color-mix(in srgb, var(--secondary) 86%, black)
+  ) !important;
+}
+
+.ant-btn-default:hover,
+.ant-btn-text:hover,
+.ant-btn-link:hover {
+  color: var(--primary) !important;
 }
 
 .ant-modal-content {
@@ -77,16 +105,50 @@ h1,h2,h3,h4,p,span,li,label, .ant-typography {
   border: 1px solid rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
 }
+
 .ant-modal-title {
   background: transparent !important;
   color: var(--secondary) !important;
+}
+
+.ant-menu-light .ant-menu-item-selected,
+.ant-menu-light > .ant-menu .ant-menu-item-selected {
+  font-weight: 600;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-input:hover,
+.ant-input-number:hover,
+.ant-picker:hover {
+  border-color: color-mix(in srgb, var(--primary) 72%, white) !important;
+}
+
+.ant-input-affix-wrapper:focus-within,
+.ant-input:focus,
+.ant-input-focused,
+.ant-picker-focused {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 16%, transparent) !important;
 }
 
 .ant-tag-gold {
   color: #a07d08 !important;
 }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #e7eef7; }
-::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #3699b0; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--background) 88%, #d9e3f0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--secondary) 82%, black);
+}

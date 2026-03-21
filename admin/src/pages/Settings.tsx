@@ -11,10 +11,16 @@ interface ThemeDraft {
 }
 
 const presetOptions = [
-  { label: '海盐蓝', value: 'ocean' },
-  { label: '青竹绿', value: 'emerald' },
-  { label: '晚霞橙', value: 'sunset' }
+  { label: '海雾蓝', value: 'ocean' },
+  { label: '松石绿', value: 'emerald' },
+  { label: '暮光橙', value: 'sunset' }
 ]
+
+const presetDescriptions: Record<ThemeMode, string> = {
+  ocean: '冷静、清透，适合内容密集和长时间浏览。',
+  emerald: '自然、温和，适合成员信息和资料管理场景。',
+  sunset: '温暖、醒目，适合需要更强视觉层次的后台界面。'
+}
 
 const colorToHex = (color: string | Color) => {
   if (typeof color === 'string') return color
@@ -114,12 +120,12 @@ export default function Settings() {
             <Input placeholder="由基家族" />
           </Form.Item>
           <Form.Item name="site_description" label="站点描述">
-            <Input.TextArea rows={2} placeholder="站点描述，用于SEO" />
+            <Input.TextArea rows={2} placeholder="站点描述，用于 SEO" />
           </Form.Item>
-          <Form.Item name="site_keywords" label="SEO关键词">
-            <Input placeholder="关键词1,关键词2,关键词3" />
+          <Form.Item name="site_keywords" label="SEO 关键词">
+            <Input placeholder="关键词1, 关键词2, 关键词3" />
           </Form.Item>
-          <Form.Item name="site_logo" label="站点LOGO">
+          <Form.Item name="site_logo" label="站点 Logo">
             <Input placeholder="/uploads/logo.png" />
           </Form.Item>
         </Form>
@@ -131,7 +137,7 @@ export default function Settings() {
       children: (
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
           <Typography.Text type="secondary">
-            双记忆优先级：本地偏好（实时预览）优先，其次站点配置。保存后将把当前主色/辅色写入系统配置。
+            主题支持实时预览。当前选择会优先保存在本地，保存设置后会同步写入系统配置，刷新后仍可保持一致。
           </Typography.Text>
 
           <div>
@@ -139,10 +145,13 @@ export default function Settings() {
             <div style={{ marginTop: 10 }}>
               <Segmented
                 value={themeDraft.mode}
-                onChange={(v) => handleModeChange(v as ThemeMode)}
+                onChange={(value) => handleModeChange(value as ThemeMode)}
                 options={presetOptions}
               />
             </div>
+            <Typography.Paragraph type="secondary" style={{ marginTop: 10, marginBottom: 0 }}>
+              {presetDescriptions[themeDraft.mode]}
+            </Typography.Paragraph>
           </div>
 
           <Space wrap>
@@ -166,12 +175,14 @@ export default function Settings() {
                 />
               </div>
             </div>
-            <Button onClick={() => {
-              clearThemeMemory()
-              const merged = buildTheme(form.getFieldsValue())
-              syncTheme({ mode: merged.mode, primary: merged.primary, secondary: merged.secondary }, false)
-              message.success('已清除本地主题记忆')
-            }}>
+            <Button
+              onClick={() => {
+                clearThemeMemory()
+                const merged = buildTheme(form.getFieldsValue())
+                syncTheme({ mode: merged.mode, primary: merged.primary, secondary: merged.secondary }, false)
+                message.success('已清除本地主题记忆')
+              }}
+            >
               清除本地记忆
             </Button>
           </Space>
@@ -187,7 +198,7 @@ export default function Settings() {
             <Input placeholder="由基家族" />
           </Form.Item>
           <Form.Item name="home_banner_subtitle" label="首页横幅副标题">
-            <Input placeholder="世代传承，薪火相传" />
+            <Input placeholder="世代传承，薪火相继" />
           </Form.Item>
           <Form.Item name="family_declaration" label="家族宣言">
             <Input.TextArea rows={2} placeholder="传承家族文化，凝聚家族力量" />
@@ -206,8 +217,8 @@ export default function Settings() {
           <Form.Item name="contact_phone" label="联系电话">
             <Input placeholder="13800138000" />
           </Form.Item>
-          <Form.Item name="icp_number" label="ICP备案号">
-            <Input placeholder="京ICP备XXXXXXXX号" />
+          <Form.Item name="icp_number" label="ICP 备案号">
+            <Input placeholder="京 ICP 备 XXXXXXX 号" />
           </Form.Item>
         </Form>
       )
@@ -229,7 +240,9 @@ export default function Settings() {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
         <h2>系统设置</h2>
-        <Button type="primary" loading={saving} onClick={handleSave}>保存设置</Button>
+        <Button type="primary" loading={saving} onClick={handleSave}>
+          保存设置
+        </Button>
       </div>
 
       <Card>
