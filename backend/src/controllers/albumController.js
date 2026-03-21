@@ -1,38 +1,54 @@
 /**
- * 相册控制器
- * 处理相册和图片的CRUD操作
+ * Album controller
  */
 
 const { query } = require('../config/database');
 const { getPagination, paginateResponse } = require('../utils/helpers');
 
-// ==================== 相册管理 ====================
+const isAdminRequest = (req) => req.user?.type === 'admin';
+const normalizeFlag = (value, defaultValue = 1) => {
+  if (value === undefined) {
+    return defaultValue;
+  }
 
-/**
- * 获取相册列表
- * GET /api/albums
- */
+  return value === true || value === 1 || value === '1' ? 1 : 0;
+};
+
 const getAlbums = async (req, res, next) => {
   try {
     const { page, limit, offset } = getPagination(req.query);
+    const { isPublic } = req.query;
+    const isAdmin = isAdminRequest(req);
 
-    // 只显示公开相册
-    const whereClause = 'WHERE is_public = 1';
+    let whereClause = 'WHERE 1=1';
+    const params = [];
 
-    // 查询总数
+    if (isAdmin && isPublic !== undefined) {
+      whereClause += ' AND is_public = ?';
+      params.push(normalizeFlag(isPublic));
+    }
+
+    if (!isAdmin) {
+      whereClause += ' AND is_public = 1';
+    }
+
     const countResult = await query(
-      `SELECT COUNT(*) as total FROM albums ${whereClause}`
+      `SELECT COUNT(*) as total FROM albums ${whereClause}`,
+      params
     );
     const total = countResult[0].total;
 
-    // 查询数据
+    const selectFields = isAdmin
+      ? 'id, name, description, cover_image, is_public, created_at'
+      : 'id, name, description, cover_image, created_at';
+
     const albums = await query(
-      `SELECT id, name, description, cover_image, created_at
-       FROM albums 
+      `SELECT ${selectFields}
+       FROM albums
        ${whereClause}
        ORDER BY sort_order ASC, created_at DESC
        LIMIT ? OFFSET ?`,
-      [limit, offset]
+      [...params, limit, offset]
     );
 
     res.json({
@@ -44,18 +60,15 @@ const getAlbums = async (req, res, next) => {
   }
 };
 
-/**
- * 获取相册详情
- * GET /api/albums/:id
- */
 const getAlbumById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const isAdmin = isAdminRequest(req);
 
-    // 获取相册信息
     const albums = await query(
       `SELECT id, name, description, cover_image, is_public, created_at
-       FROM albums WHERE id = ?`,
+       FROM albums
+       WHERE id = ?`,
       [id]
     );
 
@@ -68,10 +81,18 @@ const getAlbumById = async (req, res, next) => {
 
     const album = albums[0];
 
-    // 获取相册图片
+    if (!isAdmin && !album.is_public) {
+      return res.status(404).json({
+        success: false,
+        message: '相册不存在'
+      });
+    }
+
     const images = await query(
       `SELECT id, image_path, caption, sort_order, created_at
-       FROM album_images WHERE album_id = ? ORDER BY sort_order ASC, created_at ASC`,
+       FROM album_images
+       WHERE album_id = ?
+       ORDER BY sort_order ASC, created_at ASC`,
       [id]
     );
 
@@ -86,18 +107,15 @@ const getAlbumById = async (req, res, next) => {
   }
 };
 
-/**
- * 创建相册
- * POST /api/albums
- */
 const createAlbum = async (req, res, next) => {
   try {
     const { name, description, cover_image, is_public, sort_order } = req.body;
+    const publicFlag = normalizeFlag(is_public);
 
     const [result] = await query(
       `INSERT INTO albums (name, description, cover_image, is_public, sort_order)
        VALUES (?, ?, ?, ?, ?)`,
-      [name, description, cover_image, is_public !== undefined ? is_public : 1, sort_order || 0]
+      [name, description, cover_image, publicFlag, sort_order || 0]
     );
 
     res.status(201).json({
@@ -110,14 +128,11 @@ const createAlbum = async (req, res, next) => {
   }
 };
 
-/**
- * 更新相册
- * PUT /api/albums/:id
- */
 const updateAlbum = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name, description, cover_image, is_public, sort_order } = req.body;
+    const publicFlag = normalizeFlag(is_public);
 
     const existing = await query('SELECT id FROM albums WHERE id = ?', [id]);
     if (existing.length === 0) {
@@ -129,10 +144,10 @@ const updateAlbum = async (req, res, next) => {
 
     await query(
       `UPDATE albums SET
-        name = ?, description = ?, cover_image = ?, is_public = ?, 
+        name = ?, description = ?, cover_image = ?, is_public = ?,
         sort_order = ?, updated_at = NOW()
        WHERE id = ?`,
-      [name, description, cover_image, is_public, sort_order, id]
+      [name, description, cover_image, publicFlag, sort_order, id]
     );
 
     res.json({
@@ -144,10 +159,6 @@ const updateAlbum = async (req, res, next) => {
   }
 };
 
-/**
- * 删除相册
- * DELETE /api/albums/:id
- */
 const deleteAlbum = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -171,18 +182,11 @@ const deleteAlbum = async (req, res, next) => {
   }
 };
 
-// ==================== 图片管理 ====================
-
-/**
- * 添加图片到相册
- * POST /api/albums/:id/images
- */
 const addImageToAlbum = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { image_path, caption, sort_order } = req.body;
 
-    // 检查相册是否存在
     const album = await query('SELECT id FROM albums WHERE id = ?', [id]);
     if (album.length === 0) {
       return res.status(404).json({
@@ -207,10 +211,6 @@ const addImageToAlbum = async (req, res, next) => {
   }
 };
 
-/**
- * 更新图片信息
- * PUT /api/albums/images/:imageId
- */
 const updateImage = async (req, res, next) => {
   try {
     const { imageId } = req.params;
@@ -238,10 +238,6 @@ const updateImage = async (req, res, next) => {
   }
 };
 
-/**
- * 删除图片
- * DELETE /api/albums/images/:imageId
- */
 const deleteImage = async (req, res, next) => {
   try {
     const { imageId } = req.params;

@@ -1,19 +1,35 @@
 /**
- * 成员管理控制器
- * 处理家族成员的CRUD操作和关系管理
+ * Member controller
  */
 
 const { query, getConnection } = require('../config/database');
-const { getPagination, paginateResponse, formatDate, hashPassword } = require('../utils/helpers');
+const { getPagination, paginateResponse, hashPassword } = require('../utils/helpers');
 
-/**
- * 获取成员列表
- * GET /api/members
- */
+const isAdminRequest = (req) => req.user?.type === 'admin';
+
+const normalizeFlag = (value, defaultValue = 1) => {
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  return value === true || value === 1 || value === '1' ? 1 : 0;
+};
+
+const ADMIN_MEMBER_FIELDS = `
+  id, name, avatar, birth_date, death_date, bio, generation,
+  gender, phone, email, address, is_public, sort_order, created_at
+`;
+
+const PUBLIC_MEMBER_FIELDS = `
+  id, name, avatar, birth_date, death_date, bio, generation,
+  gender, is_public, sort_order, created_at
+`;
+
 const getMembers = async (req, res, next) => {
   try {
     const { page, limit, offset } = getPagination(req.query);
     const { generation, keyword, isPublic } = req.query;
+    const isAdmin = isAdminRequest(req);
 
     let whereClause = 'WHERE 1=1';
     const params = [];
@@ -23,9 +39,13 @@ const getMembers = async (req, res, next) => {
       params.push(generation);
     }
 
-    if (isPublic !== undefined) {
+    if (isAdmin && isPublic !== undefined) {
       whereClause += ' AND is_public = ?';
-      params.push(isPublic);
+      params.push(normalizeFlag(isPublic));
+    }
+
+    if (!isAdmin) {
+      whereClause += ' AND is_public = 1';
     }
 
     if (keyword) {
@@ -33,18 +53,16 @@ const getMembers = async (req, res, next) => {
       params.push(`%${keyword}%`, `%${keyword}%`);
     }
 
-    // 查询总数
     const countResult = await query(
       `SELECT COUNT(*) as total FROM members ${whereClause}`,
       params
     );
     const total = countResult[0].total;
 
-    // 查询数据
+    const selectFields = isAdmin ? ADMIN_MEMBER_FIELDS : PUBLIC_MEMBER_FIELDS;
     const members = await query(
-      `SELECT id, name, avatar, birth_date, death_date, bio, generation, 
-              gender, phone, email, address, is_public, sort_order, created_at
-       FROM members 
+      `SELECT ${selectFields}
+       FROM members
        ${whereClause}
        ORDER BY generation ASC, sort_order ASC, id ASC
        LIMIT ? OFFSET ?`,
@@ -60,19 +78,16 @@ const getMembers = async (req, res, next) => {
   }
 };
 
-/**
- * 获取成员详情
- * GET /api/members/:id
- */
 const getMemberById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const isAdmin = isAdminRequest(req);
 
-    // 获取成员基本信息
+    const selectFields = isAdmin ? ADMIN_MEMBER_FIELDS : PUBLIC_MEMBER_FIELDS;
     const members = await query(
-      `SELECT id, name, avatar, birth_date, death_date, bio, generation, 
-              gender, phone, email, address, is_public, sort_order, created_at
-       FROM members WHERE id = ?`,
+      `SELECT ${selectFields}
+       FROM members
+       WHERE id = ?${isAdmin ? '' : ' AND is_public = 1'}`,
       [id]
     );
 
@@ -84,38 +99,37 @@ const getMemberById = async (req, res, next) => {
     }
 
     const member = members[0];
+    const publicRelationFilter = isAdmin ? '' : ' AND m.is_public = 1';
 
-    // 获取父母关系
     const parents = await query(
       `SELECT m.id, m.name, m.avatar, m.generation
        FROM relationships r
        JOIN members m ON r.parent_id = m.id
-       WHERE r.member_id = ? AND r.relation_type = 'child'`,
+       WHERE r.member_id = ? AND r.relation_type = 'child'${publicRelationFilter}`,
       [id]
     );
 
-    // 获取子女关系
     const children = await query(
       `SELECT m.id, m.name, m.avatar, m.generation
        FROM relationships r
        JOIN members m ON r.member_id = m.id
-       WHERE r.parent_id = ? AND r.relation_type = 'child'`,
+       WHERE r.parent_id = ? AND r.relation_type = 'child'${publicRelationFilter}`,
       [id]
     );
 
-    // 获取配偶关系
     const spouses = await query(
       `SELECT m.id, m.name, m.avatar, m.generation
        FROM relationships r
        JOIN members m ON (r.member_id = m.id OR r.parent_id = m.id)
-       WHERE (r.member_id = ? OR r.parent_id = ?) AND r.relation_type = 'spouse'`,
+       WHERE (r.member_id = ? OR r.parent_id = ?)
+         AND r.relation_type = 'spouse'${publicRelationFilter}`,
       [id, id]
     );
 
     member.relationships = {
       parents,
       children,
-      spouses: spouses.filter(s => s.id !== parseInt(id))
+      spouses: spouses.filter((spouse) => spouse.id !== Number.parseInt(id, 10))
     };
 
     res.json({
@@ -127,34 +141,53 @@ const getMemberById = async (req, res, next) => {
   }
 };
 
-/**
- * 创建成员
- * POST /api/members
- */
 const createMember = async (req, res, next) => {
   const connection = await getConnection();
-  
+
   try {
     await connection.beginTransaction();
 
     const {
-      name, avatar, birth_date, death_date, bio, generation,
-      gender, phone, email, address, is_public, sort_order,
-      parents = [], spouses = []
+      name,
+      avatar,
+      birth_date,
+      death_date,
+      bio,
+      generation,
+      gender,
+      phone,
+      email,
+      address,
+      is_public,
+      sort_order,
+      parents = [],
+      spouses = []
     } = req.body;
 
-    // 插入成员
+    const publicFlag = normalizeFlag(is_public);
+
     const [result] = await connection.execute(
       `INSERT INTO members (name, avatar, birth_date, death_date, bio, generation,
                            gender, phone, email, address, is_public, sort_order)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, avatar, birth_date, death_date, bio, generation,
-       gender, phone, email, address, is_public || 1, sort_order || 0]
+      [
+        name,
+        avatar,
+        birth_date,
+        death_date,
+        bio,
+        generation,
+        gender,
+        phone,
+        email,
+        address,
+        publicFlag,
+        sort_order || 0
+      ]
     );
 
     const memberId = result.insertId;
 
-    // 添加父母关系
     for (const parentId of parents) {
       await connection.execute(
         'INSERT INTO relationships (member_id, parent_id, relation_type) VALUES (?, ?, ?)',
@@ -162,7 +195,6 @@ const createMember = async (req, res, next) => {
       );
     }
 
-    // 添加配偶关系
     for (const spouseId of spouses) {
       await connection.execute(
         'INSERT INTO relationships (member_id, parent_id, relation_type) VALUES (?, ?, ?)',
@@ -185,30 +217,37 @@ const createMember = async (req, res, next) => {
   }
 };
 
-/**
- * 更新成员
- * PUT /api/members/:id
- */
 const updateMember = async (req, res, next) => {
   const connection = await getConnection();
-  
+
   try {
     await connection.beginTransaction();
 
     const { id } = req.params;
     const {
-      name, avatar, birth_date, death_date, bio, generation,
-      gender, phone, email, address, is_public, sort_order,
-      parents, spouses
+      name,
+      avatar,
+      birth_date,
+      death_date,
+      bio,
+      generation,
+      gender,
+      phone,
+      email,
+      address,
+      is_public,
+      sort_order,
+      parents,
+      spouses
     } = req.body;
 
-    // 检查成员是否存在
-    const existing = await connection.execute(
+    const publicFlag = normalizeFlag(is_public);
+    const [existing] = await connection.execute(
       'SELECT id FROM members WHERE id = ?',
       [id]
     );
 
-    if (existing[0].length === 0) {
+    if (existing.length === 0) {
       await connection.rollback();
       return res.status(404).json({
         success: false,
@@ -216,25 +255,35 @@ const updateMember = async (req, res, next) => {
       });
     }
 
-    // 更新成员信息
     await connection.execute(
       `UPDATE members SET
         name = ?, avatar = ?, birth_date = ?, death_date = ?, bio = ?,
         generation = ?, gender = ?, phone = ?, email = ?, address = ?,
         is_public = ?, sort_order = ?, updated_at = NOW()
        WHERE id = ?`,
-      [name, avatar, birth_date, death_date, bio, generation,
-       gender, phone, email, address, is_public, sort_order, id]
+      [
+        name,
+        avatar,
+        birth_date,
+        death_date,
+        bio,
+        generation,
+        gender,
+        phone,
+        email,
+        address,
+        publicFlag,
+        sort_order,
+        id
+      ]
     );
 
-    // 更新关系（如果提供了）
     if (parents !== undefined) {
-      // 删除旧的父母关系
       await connection.execute(
         "DELETE FROM relationships WHERE member_id = ? AND relation_type = 'child'",
         [id]
       );
-      // 添加新的父母关系
+
       for (const parentId of parents) {
         await connection.execute(
           "INSERT INTO relationships (member_id, parent_id, relation_type) VALUES (?, ?, 'child')",
@@ -244,12 +293,11 @@ const updateMember = async (req, res, next) => {
     }
 
     if (spouses !== undefined) {
-      // 删除旧的配偶关系
       await connection.execute(
         "DELETE FROM relationships WHERE (member_id = ? OR parent_id = ?) AND relation_type = 'spouse'",
         [id, id]
       );
-      // 添加新的配偶关系
+
       for (const spouseId of spouses) {
         await connection.execute(
           "INSERT INTO relationships (member_id, parent_id, relation_type) VALUES (?, ?, 'spouse')",
@@ -272,15 +320,10 @@ const updateMember = async (req, res, next) => {
   }
 };
 
-/**
- * 删除成员
- * DELETE /api/members/:id
- */
 const deleteMember = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // 检查成员是否存在
     const existing = await query('SELECT id FROM members WHERE id = ?', [id]);
     if (existing.length === 0) {
       return res.status(404).json({
@@ -289,7 +332,6 @@ const deleteMember = async (req, res, next) => {
       });
     }
 
-    // 删除成员（关联的关系会自动删除）
     await query('DELETE FROM members WHERE id = ?', [id]);
 
     res.json({
@@ -301,21 +343,17 @@ const deleteMember = async (req, res, next) => {
   }
 };
 
-/**
- * 获取家族树数据
- * GET /api/members/tree
- */
 const getFamilyTree = async (req, res, next) => {
   try {
-    // 获取所有公开成员
     const members = await query(
       `SELECT id, name, avatar, generation, gender, birth_date, death_date
-       FROM members WHERE is_public = 1 ORDER BY generation ASC, sort_order ASC`
+       FROM members
+       WHERE is_public = 1
+       ORDER BY generation ASC, sort_order ASC`
     );
 
-    // 获取所有关系
     const relationships = await query(
-      `SELECT member_id, parent_id, relation_type FROM relationships`
+      'SELECT member_id, parent_id, relation_type FROM relationships'
     );
 
     res.json({
@@ -330,16 +368,11 @@ const getFamilyTree = async (req, res, next) => {
   }
 };
 
-/**
- * 为成员创建登录账号
- * POST /api/members/:id/account
- */
 const createMemberAccount = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { username, password, email } = req.body;
 
-    // 检查成员是否存在
     const member = await query('SELECT id FROM members WHERE id = ?', [id]);
     if (member.length === 0) {
       return res.status(404).json({
@@ -348,7 +381,6 @@ const createMemberAccount = async (req, res, next) => {
       });
     }
 
-    // 检查是否已有账号
     const existing = await query('SELECT id FROM member_users WHERE member_id = ?', [id]);
     if (existing.length > 0) {
       return res.status(409).json({
@@ -357,10 +389,8 @@ const createMemberAccount = async (req, res, next) => {
       });
     }
 
-    // 加密密码
     const hashedPassword = await hashPassword(password);
 
-    // 创建账号
     await query(
       'INSERT INTO member_users (member_id, username, password, email) VALUES (?, ?, ?, ?)',
       [id, username, hashedPassword, email]

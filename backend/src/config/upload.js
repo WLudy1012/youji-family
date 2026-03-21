@@ -8,6 +8,16 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 
 const UPLOAD_PATH = process.env.UPLOAD_PATH || path.join(__dirname, '../../uploads');
+const ALLOWED_UPLOAD_FOLDERS = new Set(['avatars', 'covers', 'albums', 'images']);
+
+const resolveUploadFolder = (value) => {
+  if (typeof value !== 'string') {
+    return 'images';
+  }
+
+  const folder = value.trim().toLowerCase();
+  return ALLOWED_UPLOAD_FOLDERS.has(folder) ? folder : 'images';
+};
 
 const ensureUploadDir = (subDir = '') => {
   const target = subDir ? path.join(UPLOAD_PATH, subDir) : UPLOAD_PATH;
@@ -20,7 +30,7 @@ ensureUploadDir();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const folder = (req.query.type || 'images').toString();
+    const folder = resolveUploadFolder(req.query.type);
     ensureUploadDir(folder);
     cb(null, path.join(UPLOAD_PATH, folder));
   },
@@ -54,7 +64,9 @@ const uploadErrorHandler = (err, req, res, next) => {
 
 module.exports = {
   UPLOAD_PATH,
+  ALLOWED_UPLOAD_FOLDERS,
   upload,
   uploadErrorHandler,
-  ensureUploadDir
+  ensureUploadDir,
+  resolveUploadFolder
 };

@@ -76,11 +76,15 @@ router.put('/admin/configs/:key', verifyAdminToken, configController.updateConfi
 
 // 成员管理
 router.post('/admin/members', verifyAdminToken, memberController.createMember);
+router.get('/admin/members', verifyAdminToken, memberController.getMembers);
+router.get('/admin/members/:id', verifyAdminToken, memberController.getMemberById);
 router.put('/admin/members/:id', verifyAdminToken, memberController.updateMember);
 router.delete('/admin/members/:id', verifyAdminToken, memberController.deleteMember);
 router.post('/admin/members/:id/account', verifyAdminToken, memberController.createMemberAccount);
 
 // 文章管理
+router.get('/admin/articles', verifyAdminToken, articleController.getArticles);
+router.get('/admin/articles/:id', verifyAdminToken, articleController.getArticleById);
 router.post('/admin/articles', verifyAdminToken, articleController.createArticle);
 router.put('/admin/articles/:id', verifyAdminToken, articleController.updateArticle);
 router.delete('/admin/articles/:id', verifyAdminToken, articleController.deleteArticle);
@@ -92,6 +96,8 @@ router.put('/admin/announcements/:id', verifyAdminToken, announcementController.
 router.delete('/admin/announcements/:id', verifyAdminToken, announcementController.deleteAnnouncement);
 
 // 相册管理
+router.get('/admin/albums', verifyAdminToken, albumController.getAlbums);
+router.get('/admin/albums/:id', verifyAdminToken, albumController.getAlbumById);
 router.post('/admin/albums', verifyAdminToken, albumController.createAlbum);
 router.put('/admin/albums/:id', verifyAdminToken, albumController.updateAlbum);
 router.delete('/admin/albums/:id', verifyAdminToken, albumController.deleteAlbum);

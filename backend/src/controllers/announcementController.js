@@ -1,20 +1,24 @@
 /**
- * 公告控制器
- * 处理公告的CRUD操作
+ * Announcement controller
  */
 
 const { query } = require('../config/database');
 const { getPagination, paginateResponse } = require('../utils/helpers');
 
-/**
- * 获取公告列表
- * GET /api/announcements
- */
+const isAdminRequest = (req) => req.user?.type === 'admin';
+const normalizeFlag = (value, defaultValue = 1) => {
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  return value === true || value === 1 || value === '1' ? 1 : 0;
+};
+
 const getAnnouncements = async (req, res, next) => {
   try {
     const { page, limit, offset } = getPagination(req.query);
-    const isAdmin = req.user?.type === 'admin';
     const { status } = req.query;
+    const isAdmin = isAdminRequest(req);
 
     let whereClause = 'WHERE 1=1';
     const params = [];
@@ -55,17 +59,15 @@ const getAnnouncements = async (req, res, next) => {
   }
 };
 
-/**
- * 获取公告详情
- * GET /api/announcements/:id
- */
 const getAnnouncementById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const isAdmin = isAdminRequest(req);
 
     const announcements = await query(
       `SELECT id, title, content, is_pinned, is_published, created_at
-       FROM announcements WHERE id = ?`,
+       FROM announcements
+       WHERE id = ?`,
       [id]
     );
 
@@ -76,26 +78,29 @@ const getAnnouncementById = async (req, res, next) => {
       });
     }
 
+    const announcement = announcements[0];
+
+    if (!isAdmin && !announcement.is_published) {
+      return res.status(404).json({
+        success: false,
+        message: '公告不存在'
+      });
+    }
+
     res.json({
       success: true,
-      data: announcements[0]
+      data: announcement
     });
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * 创建公告
- * POST /api/announcements
- */
 const createAnnouncement = async (req, res, next) => {
   try {
     const { title, content, is_pinned, is_published, publish_at } = req.body;
-
-    const pinned = is_pinned === true || is_pinned === 1 || is_pinned === '1' ? 1 : 0;
-    const published = is_published === undefined ? 1 : (is_published === true || is_published === 1 || is_published === '1' ? 1 : 0);
-
+    const pinned = normalizeFlag(is_pinned, 0);
+    const published = normalizeFlag(is_published, 1);
 
     const [result] = await query(
       `INSERT INTO announcements (title, content, is_pinned, is_published, publish_at)
@@ -113,17 +118,12 @@ const createAnnouncement = async (req, res, next) => {
   }
 };
 
-/**
- * 更新公告
- * PUT /api/announcements/:id
- */
 const updateAnnouncement = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, content, is_pinned, is_published, publish_at } = req.body;
-
-    const pinned = is_pinned === true || is_pinned === 1 || is_pinned === '1' ? 1 : 0;
-    const published = is_published === undefined ? 1 : (is_published === true || is_published === 1 || is_published === '1' ? 1 : 0);
+    const pinned = normalizeFlag(is_pinned, 0);
+    const published = normalizeFlag(is_published, 1);
 
     const existing = await query('SELECT id FROM announcements WHERE id = ?', [id]);
     if (existing.length === 0) {
@@ -135,7 +135,7 @@ const updateAnnouncement = async (req, res, next) => {
 
     await query(
       `UPDATE announcements SET
-        title = ?, content = ?, is_pinned = ?, is_published = ?, 
+        title = ?, content = ?, is_pinned = ?, is_published = ?,
         publish_at = ?, updated_at = NOW()
        WHERE id = ?`,
       [title, content, pinned, published, publish_at || null, id]
@@ -150,10 +150,6 @@ const updateAnnouncement = async (req, res, next) => {
   }
 };
 
-/**
- * 删除公告
- * DELETE /api/announcements/:id
- */
 const deleteAnnouncement = async (req, res, next) => {
   try {
     const { id } = req.params;

@@ -21,7 +21,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // 从localStorage获取token
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('member_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -40,8 +40,11 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // 未授权，清除token
-      localStorage.removeItem('token')
-      window.location.href = '/login'
+      localStorage.removeItem('member_token')
+      localStorage.removeItem('member_user')
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }
