@@ -116,7 +116,7 @@ function MainLayout() {
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
               <Avatar icon={<UserOutlined />} style={{ background: 'linear-gradient(180deg, rgba(247,249,252,0.86), rgba(237,242,247,0.84))', borderRight: '1px solid rgba(255,255,255,0.66)', backdropFilter: 'blur(12px)' }} />
-              <span style={{ color: '#2f3b4a' }}>{userInfo?.username || '管理员'}</span>
+              <span style={{ color: 'var(--text)' }}>{userInfo?.username || '管理员'}</span>
               <DownOutlined style={{ fontSize: 12 }} />
             </div>
           </Dropdown>
