@@ -38,7 +38,7 @@ export default function AlbumDetail() {
     return (
       <div className="text-center py-20">
         <p className="text-gray-500">相册不存在</p>
-        <Link to="/albums" className="text-[#1e3a5f] hover:underline mt-4 inline-block">
+        <Link to="/albums" className="text-[var(--primary)] hover:underline mt-4 inline-block">
           返回相册列表
         </Link>
       </div>
@@ -47,14 +47,14 @@ export default function AlbumDetail() {
 
   return (
     <div>
-      <Link to="/albums" className="flex items-center text-[#1e3a5f] hover:text-[#c9a227] mb-6">
+      <Link to="/albums" className="flex items-center text-[var(--primary)] hover:text-[var(--accent)] mb-6">
         <ChevronLeft className="w-5 h-5" />
         返回相册列表
       </Link>
 
       {/* 相册信息 */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#1e3a5f]">{album.name}</h1>
+        <h1 className="text-3xl font-bold text-[var(--primary)]">{album.name}</h1>
         {album.description && (
           <p className="text-gray-600 mt-2">{album.description}</p>
         )}

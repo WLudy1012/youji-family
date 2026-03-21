@@ -52,14 +52,14 @@ export default function Articles() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#1e3a5f]/10">
-                    <BookOpen className="w-12 h-12 text-[#1e3a5f]/30" />
+                  <div className="w-full h-full flex items-center justify-center bg-[var(--primary)]/10">
+                    <BookOpen className="w-12 h-12 text-[var(--primary)]/30" />
                   </div>
                 )}
               </div>
               <div className="p-5">
                 <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                  <span className="text-[#c9a227] font-medium">{article.category}</span>
+                  <span className="text-[var(--accent)] font-medium">{article.category}</span>
                   <span>•</span>
                   <span className="flex items-center">
                     <Calendar className="w-3 h-3 mr-1" />
@@ -71,7 +71,7 @@ export default function Articles() {
                     {article.view_count}
                   </span>
                 </div>
-                <h2 className="text-lg font-semibold text-[#1e3a5f] line-clamp-2 group-hover:text-[#c9a227] transition-colors">
+                <h2 className="text-lg font-semibold text-[var(--primary)] line-clamp-2 group-hover:text-[var(--accent)] transition-colors">
                   {article.title}
                 </h2>
                 {article.summary && (

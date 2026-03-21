@@ -71,4 +71,7 @@ export const getAlbum = (id: number | string) => api.get(`/albums/${id}`)
 export const getGuestbook = (params?: any) => api.get('/guestbook', { params })
 export const createMessage = (data: any) => api.post('/guestbook', data)
 
+// ==================== 访问统计 ====================
+export const trackVisit = (data: { visitorId: string; path: string }) => api.post('/visits/track', data)
+
 export default api
