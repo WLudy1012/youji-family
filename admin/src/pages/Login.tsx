@@ -34,11 +34,11 @@ export default function Login() {
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%)'
+      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)'
     }}>
       <Card style={{ width: 400, borderRadius: 8 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <h1 style={{ color: '#1e3a5f', margin: 0 }}>由基家族</h1>
+          <h1 style={{ color: 'var(--primary)', margin: 0 }}>由基家族</h1>
           <p style={{ color: '#666', margin: '8px 0 0' }}>管理后台登录</p>
         </div>
         
@@ -74,7 +74,7 @@ export default function Login() {
               htmlType="submit" 
               loading={loading}
               block
-              style={{ background: '#1e3a5f' }}
+              style={{ background: 'var(--primary)' }}
             >
               登录
             </Button>

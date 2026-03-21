@@ -51,13 +51,13 @@ export default function Members() {
         <div className="flex gap-2">
           <button
             onClick={() => setViewMode('grid')}
-            className={`px-4 py-2 rounded-lg ${viewMode === 'grid' ? 'bg-[#1e3a5f] text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded-lg ${viewMode === 'grid' ? 'bg-[var(--primary)] text-white' : 'bg-gray-200'}`}
           >
             列表
           </button>
           <button
             onClick={() => setViewMode('tree')}
-            className={`px-4 py-2 rounded-lg ${viewMode === 'tree' ? 'bg-[#1e3a5f] text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded-lg ${viewMode === 'tree' ? 'bg-[var(--primary)] text-white' : 'bg-gray-200'}`}
           >
             族谱
           </button>
@@ -70,8 +70,8 @@ export default function Members() {
             .sort(([a], [b]) => Number(a) - Number(b))
             .map(([generation, genMembers]) => (
               <div key={generation}>
-                <h2 className="text-xl font-bold text-[#1e3a5f] mb-4 flex items-center">
-                  <span className="w-8 h-8 bg-[#c9a227] text-white rounded-full flex items-center justify-center text-sm mr-3">
+                <h2 className="text-xl font-bold text-[var(--primary)] mb-4 flex items-center">
+                  <span className="w-8 h-8 bg-[var(--accent)] text-white rounded-full flex items-center justify-center text-sm mr-3">
                     {generation}
                   </span>
                   第{generation}代
@@ -87,7 +87,7 @@ export default function Members() {
                         )}
                       </div>
                       <div className="p-4 text-center">
-                        <h3 className="font-semibold text-[#1e3a5f]">{member.name}</h3>
+                        <h3 className="font-semibold text-[var(--primary)]">{member.name}</h3>
                         <p className="text-sm text-gray-500">{member.relation}</p>
                       </div>
                     </Link>
@@ -128,13 +128,13 @@ function FamilyTreeView({ data }: { data: any }) {
         {generations.map(([gen, genMembers], index) => (
           <section key={gen} className="relative">
             <div className="sticky top-0 z-10 mb-3">
-              <span className="inline-block px-3 py-1 rounded-full bg-[#1e3a5f] text-white text-sm shadow">
+              <span className="inline-block px-3 py-1 rounded-full bg-[var(--primary)] text-white text-sm shadow">
                 第{gen}代
               </span>
             </div>
 
             {index !== generations.length - 1 && (
-              <div className="absolute left-5 top-11 bottom-[-26px] w-px bg-gradient-to-b from-[#c9a227] to-transparent" />
+              <div className="absolute left-5 top-11 bottom-[-26px] w-px bg-gradient-to-b from-[var(--accent)] to-transparent" />
             )}
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 pl-10">
@@ -144,9 +144,9 @@ function FamilyTreeView({ data }: { data: any }) {
                   <Link
                     key={member.id}
                     to={`/members/${member.id}`}
-                    className="group rounded-2xl border border-[#1e3a5f]/15 bg-white/80 hover:bg-white p-3 transition-all hover:-translate-y-1 hover:shadow-lg"
+                    className="group rounded-2xl border border-[var(--primary)]/15 bg-white/80 hover:bg-white p-3 transition-all hover:-translate-y-1 hover:shadow-lg"
                   >
-                    <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full overflow-hidden flex items-center justify-center ring-2 ring-[#c9a227]/40 group-hover:ring-[#c9a227] transition-all">
+                    <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full overflow-hidden flex items-center justify-center ring-2 ring-[var(--accent)]/40 group-hover:ring-[var(--accent)] transition-all">
                       {member.avatar ? (
                         <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                       ) : (
@@ -154,7 +154,7 @@ function FamilyTreeView({ data }: { data: any }) {
                       )}
                     </div>
                     <div className="text-center mt-2">
-                      <p className="font-semibold text-[#1e3a5f] text-sm line-clamp-1">{nickname}</p>
+                      <p className="font-semibold text-[var(--primary)] text-sm line-clamp-1">{nickname}</p>
                       <p className="text-xs text-gray-500 line-clamp-1">{member.name}</p>
                     </div>
                   </Link>

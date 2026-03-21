@@ -79,7 +79,7 @@ export default function Layout() {
   return (
     <div className="app-shell min-h-screen flex flex-col">
       {/* 导航栏 */}
-      <header className="bg-[#4ECDC4]/95 backdrop-blur text-[#2f3b4a] shadow-lg sticky top-0 z-40 border-b border-[#dbe4ef]">
+      <header className="bg-[var(--primary)]/95 backdrop-blur text-[var(--text)] shadow-lg sticky top-0 z-40 border-b border-[#dbe4ef]">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -98,7 +98,7 @@ export default function Layout() {
                   to={item.path}
                   className={`flex items-center space-x-1 px-4 py-2 rounded-lg transition-colors ${
                     isActive(item.path)
-                      ? 'bg-[#FF6B6B] text-[#2f3b4a]'
+                      ? 'bg-[var(--accent)] text-[var(--text)]'
                       : 'hover:bg-[#ffffff]/70'
                   }`}
                 >
@@ -113,7 +113,7 @@ export default function Layout() {
               {isLoggedIn ? (
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-[#FF6B6B] rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-[var(--accent)] rounded-full flex items-center justify-center">
                       <User className="w-4 h-4" />
                     </div>
                     <span className="text-sm">{user?.member_name || user?.username}</span>
@@ -129,7 +129,7 @@ export default function Layout() {
               ) : (
                 <button
                   onClick={() => setLoginModalOpen(true)}
-                  className="flex items-center space-x-1 px-4 py-2 bg-[#FF6B6B] hover:bg-[#ff8585] rounded-lg transition-colors"
+                  className="flex items-center space-x-1 px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent)] rounded-lg transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>登录</span>
@@ -140,7 +140,7 @@ export default function Layout() {
             {/* 移动端菜单按钮 */}
             <div className="flex items-center space-x-2 md:hidden">
               {isLoggedIn && (
-                <div className="w-8 h-8 bg-[#FF6B6B] rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-[var(--accent)] rounded-full flex items-center justify-center">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -163,7 +163,7 @@ export default function Layout() {
                 to={item.path}
                 className={`flex items-center space-x-2 px-4 py-3 ${
                   isActive(item.path)
-                    ? 'bg-[#FF6B6B] text-[#2f3b4a]'
+                    ? 'bg-[var(--accent)] text-[var(--text)]'
                     : 'hover:bg-[#ffffff]/70'
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
@@ -190,7 +190,7 @@ export default function Layout() {
                   setLoginModalOpen(true)
                   setMobileMenuOpen(false)
                 }}
-                className="w-full flex items-center space-x-2 px-4 py-3 text-[#FF6B6B] hover:bg-[#ffffff]/70"
+                className="w-full flex items-center space-x-2 px-4 py-3 text-[var(--accent)] hover:bg-[#ffffff]/70"
               >
                 <LogIn className="w-5 h-5" />
                 <span>登录 / 注册</span>
@@ -206,13 +206,13 @@ export default function Layout() {
       </main>
 
       {/* 页脚 */}
-      <footer className="bg-[#edf2f7] text-[#2f3b4a] py-10 border-t border-[#dbe4ef]">
+      <footer className="bg-[#edf2f7] text-[var(--text)] py-10 border-t border-[#dbe4ef]">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             {/* 关于 */}
             <div>
               <h3 className="text-lg font-bold mb-4">{config?.site_name || '由基家族'}</h3>
-              <p className="text-[#2f3b4a]/70 text-sm">
+              <p className="text-[var(--text)]/70 text-sm">
                 传承家族文化，凝聚家族力量。
               </p>
             </div>
@@ -224,13 +224,13 @@ export default function Layout() {
                 {allNavItems.map((item) => (
                   <li key={item.path}>
                     {isLoggedIn || item.path === '/' ? (
-                      <Link to={item.path} className="text-[#2f3b4a]/70 hover:text-[#FF6B6B]">
+                      <Link to={item.path} className="text-[var(--text)]/70 hover:text-[var(--accent)]">
                         {item.label}
                       </Link>
                     ) : (
                       <span 
                         onClick={() => setLoginModalOpen(true)}
-                        className="text-[#2f3b4a]/40 cursor-pointer hover:text-[#FF6B6B]"
+                        className="text-[var(--text)]/40 cursor-pointer hover:text-[var(--accent)]"
                       >
                         {item.label} (需登录)
                       </span>
@@ -243,13 +243,13 @@ export default function Layout() {
             {/* 联系方式 */}
             <div>
               <h3 className="text-lg font-bold mb-4">联系我们</h3>
-              <p className="text-[#2f3b4a]/70 text-sm">
+              <p className="text-[var(--text)]/70 text-sm">
                 如有问题或建议，请在留言板留言。
               </p>
               {!isLoggedIn && (
                 <button
                   onClick={() => setLoginModalOpen(true)}
-                  className="mt-4 px-4 py-2 bg-[#FF6B6B] hover:bg-[#ff8585] rounded-lg text-sm transition-colors"
+                  className="mt-4 px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent)] rounded-lg text-sm transition-colors"
                 >
                   登录 / 注册
                 </button>
@@ -257,7 +257,7 @@ export default function Layout() {
             </div>
           </div>
 
-          <div className="border-t border-[#dbe4ef] mt-8 pt-4 text-center text-sm text-[#2f3b4a]/50">
+          <div className="border-t border-[#dbe4ef] mt-8 pt-4 text-center text-sm text-[var(--text)]/50">
             {config?.footer_copyright || '© 2024 由基家族 版权所有'}
           </div>
         </div>

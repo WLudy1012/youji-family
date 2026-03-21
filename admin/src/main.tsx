@@ -12,13 +12,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       locale={zhCN}
       theme={{
         token: {
-          colorPrimary: '#4ecdc4',
-          colorInfo: '#4ecdc4',
-          colorSuccess: '#45b7d1',
-          colorWarning: '#f9c80e',
+          colorPrimary: 'var(--primary)',
+          colorInfo: 'var(--primary)',
+          colorSuccess: 'var(--secondary)',
+          colorWarning: 'var(--accent)',
           colorError: '#ff7875',
-          colorBgBase: '#f7f9fc',
-          colorTextBase: '#2f3b4a',
+          colorBgBase: 'var(--background)',
+          colorTextBase: 'var(--text)',
           borderRadius: 10
         }
       }}

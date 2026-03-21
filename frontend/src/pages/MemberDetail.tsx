@@ -38,7 +38,7 @@ export default function MemberDetail() {
     return (
       <div className="text-center py-20">
         <p className="text-gray-500">成员不存在</p>
-        <Link to="/members" className="text-[#1e3a5f] hover:underline mt-4 inline-block">
+        <Link to="/members" className="text-[var(--primary)] hover:underline mt-4 inline-block">
           返回成员列表
         </Link>
       </div>
@@ -47,16 +47,16 @@ export default function MemberDetail() {
 
   return (
     <div>
-      <Link to="/members" className="flex items-center text-[#1e3a5f] hover:text-[#c9a227] mb-6">
+      <Link to="/members" className="flex items-center text-[var(--primary)] hover:text-[var(--accent)] mb-6">
         <ChevronLeft className="w-5 h-5" />
         返回成员列表
       </Link>
 
       <div className="card overflow-hidden">
         {/* 头部 */}
-        <div className="bg-gradient-to-r from-[#1e3a5f] to-[#2d4a6f] p-8 text-white">
+        <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] p-8 text-white">
           <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center overflow-hidden border-4 border-[#c9a227]">
+            <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center overflow-hidden border-4 border-[var(--accent)]">
               {member.avatar ? (
                 <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
               ) : (
@@ -85,11 +85,11 @@ export default function MemberDetail() {
           <div className="grid md:grid-cols-2 gap-8">
             {/* 基本信息 */}
             <div>
-              <h2 className="text-xl font-bold text-[#1e3a5f] mb-4">基本信息</h2>
+              <h2 className="text-xl font-bold text-[var(--primary)] mb-4">基本信息</h2>
               <div className="space-y-3">
                 {member.birth_date && (
                   <div className="flex items-center text-gray-600">
-                    <Calendar className="w-5 h-5 mr-3 text-[#c9a227]" />
+                    <Calendar className="w-5 h-5 mr-3 text-[var(--accent)]" />
                     <span>出生日期：{new Date(member.birth_date).toLocaleDateString('zh-CN')}</span>
                   </div>
                 )}
@@ -101,19 +101,19 @@ export default function MemberDetail() {
                 )}
                 {member.phone && (
                   <div className="flex items-center text-gray-600">
-                    <Phone className="w-5 h-5 mr-3 text-[#c9a227]" />
+                    <Phone className="w-5 h-5 mr-3 text-[var(--accent)]" />
                     <span>{member.phone}</span>
                   </div>
                 )}
                 {member.email && (
                   <div className="flex items-center text-gray-600">
-                    <Mail className="w-5 h-5 mr-3 text-[#c9a227]" />
+                    <Mail className="w-5 h-5 mr-3 text-[var(--accent)]" />
                     <span>{member.email}</span>
                   </div>
                 )}
                 {member.address && (
                   <div className="flex items-center text-gray-600">
-                    <MapPin className="w-5 h-5 mr-3 text-[#c9a227]" />
+                    <MapPin className="w-5 h-5 mr-3 text-[var(--accent)]" />
                     <span>{member.address}</span>
                   </div>
                 )}
@@ -123,7 +123,7 @@ export default function MemberDetail() {
             {/* 家族关系 */}
             {member.relationships && (
               <div>
-                <h2 className="text-xl font-bold text-[#1e3a5f] mb-4">家族关系</h2>
+                <h2 className="text-xl font-bold text-[var(--primary)] mb-4">家族关系</h2>
                 <div className="space-y-4">
                   {member.relationships.parents?.length > 0 && (
                     <div>
@@ -133,7 +133,7 @@ export default function MemberDetail() {
                           <Link
                             key={p.id}
                             to={`/members/${p.id}`}
-                            className="px-3 py-1 bg-[#1e3a5f]/10 text-[#1e3a5f] rounded-full text-sm hover:bg-[#1e3a5f] hover:text-white transition-colors"
+                            className="px-3 py-1 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-sm hover:bg-[var(--primary)] hover:text-white transition-colors"
                           >
                             {p.name}
                           </Link>
@@ -149,7 +149,7 @@ export default function MemberDetail() {
                           <Link
                             key={c.id}
                             to={`/members/${c.id}`}
-                            className="px-3 py-1 bg-[#c9a227]/20 text-[#c9a227] rounded-full text-sm hover:bg-[#c9a227] hover:text-white transition-colors"
+                            className="px-3 py-1 bg-[var(--accent)]/20 text-[var(--accent)] rounded-full text-sm hover:bg-[var(--accent)] hover:text-white transition-colors"
                           >
                             {c.name}
                           </Link>
@@ -181,7 +181,7 @@ export default function MemberDetail() {
           {/* 个人简介 */}
           {member.bio && (
             <div className="mt-8">
-              <h2 className="text-xl font-bold text-[#1e3a5f] mb-4">个人简介</h2>
+              <h2 className="text-xl font-bold text-[var(--primary)] mb-4">个人简介</h2>
               <div className="bg-gray-50 p-6 rounded-xl">
                 <p className="text-gray-700 whitespace-pre-wrap">{member.bio}</p>
               </div>

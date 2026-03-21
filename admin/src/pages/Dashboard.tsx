@@ -37,8 +37,8 @@ function VisitLineChart({ data }: { data: TrendPoint[] }) {
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 260 }}>
         <defs>
           <linearGradient id="visitArea" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#4ecdc4" stopOpacity="0.38" />
-            <stop offset="100%" stopColor="#4ecdc4" stopOpacity="0.05" />
+            <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.38" />
+            <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.05" />
           </linearGradient>
         </defs>
 
@@ -65,7 +65,7 @@ function VisitLineChart({ data }: { data: TrendPoint[] }) {
 
         <polyline
           fill="none"
-          stroke="#45B7D1"
+          stroke="var(--secondary)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -77,7 +77,7 @@ function VisitLineChart({ data }: { data: TrendPoint[] }) {
           const y = height - padding - (item.count / max) * (height - padding * 2)
           return (
             <g key={`point-${item.label}-${index}`}>
-              <circle cx={x} cy={y} r="4" fill="#FF6B6B" />
+              <circle cx={x} cy={y} r="4" fill="var(--accent)" />
             </g>
           )
         })}
@@ -87,7 +87,7 @@ function VisitLineChart({ data }: { data: TrendPoint[] }) {
         {data
           .filter((_, idx) => idx % Math.ceil(data.length / 8 || 1) === 0)
           .map((item) => (
-            <div key={`label-${item.label}`} style={{ fontSize: 12, color: '#5f6c7b' }}>
+            <div key={`label-${item.label}`} style={{ fontSize: 12, color: 'var(--text)' }}>
               {item.label}
             </div>
           ))}
@@ -158,22 +158,22 @@ export default function Dashboard() {
       <Row gutter={16}>
         <Col span={6}>
           <Card>
-            <Statistic title="家族成员" value={stats.members} prefix={<TeamOutlined />} valueStyle={{ color: '#45B7D1' }} />
+            <Statistic title="家族成员" value={stats.members} prefix={<TeamOutlined />} valueStyle={{ color: 'var(--secondary)' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic title="文章数量" value={stats.articles} prefix={<FileTextOutlined />} valueStyle={{ color: '#4ECDC4' }} />
+            <Statistic title="文章数量" value={stats.articles} prefix={<FileTextOutlined />} valueStyle={{ color: 'var(--primary)' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic title="相册数量" value={stats.albums} prefix={<PictureOutlined />} valueStyle={{ color: '#F9C80E' }} />
+            <Statistic title="相册数量" value={stats.albums} prefix={<PictureOutlined />} valueStyle={{ color: 'var(--accent)' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic title="留言数量" value={stats.messages} prefix={<MessageOutlined />} valueStyle={{ color: '#FF6B6B' }} />
+            <Statistic title="留言数量" value={stats.messages} prefix={<MessageOutlined />} valueStyle={{ color: 'var(--accent)' }} />
           </Card>
         </Col>
       </Row>
@@ -181,22 +181,22 @@ export default function Dashboard() {
       <Row gutter={16} style={{ marginTop: 16 }}>
         <Col span={6}>
           <Card>
-            <Statistic title="今日访问人数" value={visitStats.today} prefix={<UserOutlined />} valueStyle={{ color: '#4ECDC4' }} />
+            <Statistic title="今日访问人数" value={visitStats.today} prefix={<UserOutlined />} valueStyle={{ color: 'var(--primary)' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic title="昨日访问人数" value={visitStats.yesterday} valueStyle={{ color: '#45B7D1' }} />
+            <Statistic title="昨日访问人数" value={visitStats.yesterday} valueStyle={{ color: 'var(--secondary)' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic title="近7天访问人数" value={visitStats.last7Days} valueStyle={{ color: '#FF6B6B' }} />
+            <Statistic title="近7天访问人数" value={visitStats.last7Days} valueStyle={{ color: 'var(--accent)' }} />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
-            <Statistic title="累计访问人数" value={visitStats.totalUniqueVisitors} valueStyle={{ color: '#9B5DE5' }} />
+            <Statistic title="累计访问人数" value={visitStats.totalUniqueVisitors} valueStyle={{ color: 'var(--secondary)' }} />
           </Card>
         </Col>
       </Row>

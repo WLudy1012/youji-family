@@ -45,15 +45,15 @@ export default function Announcements() {
             <div key={item.id} className="card p-6">
               <div className="flex items-start gap-4">
                 <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
-                  item.is_pinned ? 'bg-[#c9a227] text-white' : 'bg-[#1e3a5f]/10 text-[#1e3a5f]'
+                  item.is_pinned ? 'bg-[var(--accent)] text-white' : 'bg-[var(--primary)]/10 text-[var(--primary)]'
                 }`}>
                   <Bell className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h2 className="text-xl font-semibold text-[#1e3a5f]">{item.title}</h2>
+                    <h2 className="text-xl font-semibold text-[var(--primary)]">{item.title}</h2>
                     {item.is_pinned && (
-                      <span className="px-2 py-0.5 bg-[#c9a227] text-white text-xs rounded-full">
+                      <span className="px-2 py-0.5 bg-[var(--accent)] text-white text-xs rounded-full">
                         置顶
                       </span>
                     )}

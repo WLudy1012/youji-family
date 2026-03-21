@@ -69,20 +69,20 @@ export default function Home() {
   return (
     <div className="space-y-16">
       {/* Hero区域 - 所有人可见 */}
-      <section className="relative bg-gradient-to-br from-[#4ECDC4] to-[#45B7D1] rounded-2xl overflow-hidden text-[#2f3b4a]">
+      <section className="relative bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] rounded-2xl overflow-hidden text-[var(--text)]">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 20% 50%, #FF6B6B 0%, transparent 50%), radial-gradient(circle at 80% 50%, #FF6B6B 0%, transparent 50%)'
+            backgroundImage: 'radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%), radial-gradient(circle at 80% 50%, var(--accent) 0%, transparent 50%)'
           }} />
         </div>
         <div className="relative px-8 py-20 md:py-28 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             {config?.home_banner_title || '由基家族'}
           </h1>
-          <p className="text-xl md:text-2xl text-[#2f3b4a]/80 mb-8">
+          <p className="text-xl md:text-2xl text-[var(--text)]/80 mb-8">
             {config?.home_banner_subtitle || '世代传承，薪火相传'}
           </p>
-          <p className="text-lg text-[#2f3b4a]/60 max-w-2xl mx-auto">
+          <p className="text-lg text-[var(--text)]/60 max-w-2xl mx-auto">
             {config?.family_declaration || '传承家族文化，凝聚家族力量'}
           </p>
           
@@ -92,14 +92,14 @@ export default function Home() {
                 <Users className="w-5 h-5 mr-2" />
                 查看族谱
               </Link>
-              <Link to="/articles" className="btn bg-white/70 hover:bg-white/90 text-[#2f3b4a]">
+              <Link to="/articles" className="btn bg-white/70 hover:bg-white/90 text-[var(--text)]">
                 <BookOpen className="w-5 h-5 mr-2" />
                 阅读文章
               </Link>
             </div>
           ) : (
             <div className="mt-10">
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/70 rounded-full text-[#2f3b4a]/80">
+              <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/70 rounded-full text-[var(--text)]/80">
                 <Lock className="w-4 h-4" />
                 <span>登录后可查看完整内容</span>
               </div>
@@ -114,7 +114,7 @@ export default function Home() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="page-title mb-0">最新公告</h2>
             {isLoggedIn && (
-              <Link to="/announcements" className="flex items-center text-[#45B7D1] hover:text-[#FF6B6B]">
+              <Link to="/announcements" className="flex items-center text-[var(--secondary)] hover:text-[var(--accent)]">
                 查看全部 <ChevronRight className="w-4 h-4" />
               </Link>
             )}
@@ -122,7 +122,7 @@ export default function Home() {
           <div className="space-y-4">
             {announcements.slice(0, isLoggedIn ? 3 : 1).map((item: any) => (
               <div key={item.id} className="card p-6 flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-[#FF6B6B] rounded-full flex items-center justify-center text-[#2f3b4a] font-bold">
+                <div className="flex-shrink-0 w-12 h-12 bg-[var(--accent)] rounded-full flex items-center justify-center text-[var(--text)] font-bold">
                   公告
                 </div>
                 <div className="flex-1">
@@ -151,7 +151,7 @@ export default function Home() {
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="page-title mb-0">家族成员</h2>
-                <Link to="/members" className="flex items-center text-[#45B7D1] hover:text-[#FF6B6B]">
+                <Link to="/members" className="flex items-center text-[var(--secondary)] hover:text-[var(--accent)]">
                   查看全部 <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -166,7 +166,7 @@ export default function Home() {
                       )}
                     </div>
                     <div className="p-4 text-center">
-                      <h3 className="font-semibold text-[#45B7D1]">{member.name}</h3>
+                      <h3 className="font-semibold text-[var(--secondary)]">{member.name}</h3>
                       <p className="text-sm text-gray-500">{member.relation}</p>
                     </div>
                   </Link>
@@ -180,7 +180,7 @@ export default function Home() {
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="page-title mb-0">家族文章</h2>
-                <Link to="/articles" className="flex items-center text-[#45B7D1] hover:text-[#FF6B6B]">
+                <Link to="/articles" className="flex items-center text-[var(--secondary)] hover:text-[var(--accent)]">
                   查看全部 <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -191,14 +191,14 @@ export default function Home() {
                       {article.cover_image ? (
                         <img src={article.cover_image} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-[#45B7D1]/10">
-                          <BookOpen className="w-12 h-12 text-[#45B7D1]/30" />
+                        <div className="w-full h-full flex items-center justify-center bg-[var(--secondary)]/10">
+                          <BookOpen className="w-12 h-12 text-[var(--secondary)]/30" />
                         </div>
                       )}
                     </div>
                     <div className="p-4">
-                      <span className="text-xs text-[#FF6B6B] font-medium">{article.category}</span>
-                      <h3 className="font-semibold text-[#45B7D1] mt-1 line-clamp-2">{article.title}</h3>
+                      <span className="text-xs text-[var(--accent)] font-medium">{article.category}</span>
+                      <h3 className="font-semibold text-[var(--secondary)] mt-1 line-clamp-2">{article.title}</h3>
                       <p className="text-sm text-gray-500 mt-2 line-clamp-2">{article.summary}</p>
                     </div>
                   </Link>
@@ -212,7 +212,7 @@ export default function Home() {
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="page-title mb-0">家族相册</h2>
-                <Link to="/albums" className="flex items-center text-[#45B7D1] hover:text-[#FF6B6B]">
+                <Link to="/albums" className="flex items-center text-[var(--secondary)] hover:text-[var(--accent)]">
                   查看全部 <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -223,13 +223,13 @@ export default function Home() {
                       {album.cover_image ? (
                         <img src={album.cover_image} alt={album.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-[#45B7D1]/10">
-                          <Image className="w-12 h-12 text-[#45B7D1]/30" />
+                        <div className="w-full h-full flex items-center justify-center bg-[var(--secondary)]/10">
+                          <Image className="w-12 h-12 text-[var(--secondary)]/30" />
                         </div>
                       )}
                     </div>
                     <div className="p-4">
-                      <h3 className="font-semibold text-[#45B7D1]">{album.name}</h3>
+                      <h3 className="font-semibold text-[var(--secondary)]">{album.name}</h3>
                     </div>
                   </Link>
                 ))}
@@ -238,10 +238,10 @@ export default function Home() {
           )}
 
           {/* 留言板入口 */}
-          <section className="bg-gradient-to-r from-[#4ECDC4] to-[#45B7D1] rounded-2xl p-8 text-[#2f3b4a] text-center">
-            <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[#FF6B6B]" />
+          <section className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] rounded-2xl p-8 text-[var(--text)] text-center">
+            <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[var(--accent)]" />
             <h2 className="text-2xl font-bold mb-4">有话想说？</h2>
-            <p className="text-[#2f3b4a]/70 mb-6">在家族留言板留下您的祝福和建议</p>
+            <p className="text-[var(--text)]/70 mb-6">在家族留言板留下您的祝福和建议</p>
             <Link to="/guestbook" className="btn btn-secondary inline-flex">
               去留言
             </Link>
@@ -251,10 +251,10 @@ export default function Home() {
 
       {/* 访客提示 */}
       {!isLoggedIn && (
-        <section className="bg-gradient-to-r from-[#4ECDC4] to-[#45B7D1] rounded-2xl p-8 text-[#2f3b4a] text-center">
-          <Lock className="w-16 h-16 mx-auto mb-4 text-[#FF6B6B]" />
+        <section className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] rounded-2xl p-8 text-[var(--text)] text-center">
+          <Lock className="w-16 h-16 mx-auto mb-4 text-[var(--accent)]" />
           <h2 className="text-2xl font-bold mb-4">更多内容等你探索</h2>
-          <p className="text-[#2f3b4a]/70 mb-6">登录后可查看家族成员、文章、相册等完整内容</p>
+          <p className="text-[var(--text)]/70 mb-6">登录后可查看家族成员、文章、相册等完整内容</p>
           <Link to="/login" className="btn btn-secondary inline-flex">
             <LogIn className="w-5 h-5 mr-2" />
             立即登录

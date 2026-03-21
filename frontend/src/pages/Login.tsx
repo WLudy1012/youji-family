@@ -103,13 +103,13 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e3a5f] to-[#2d4a6f] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         {/* 返回按钮 */}
         <div className="px-6 pt-4">
           <Link 
             to="/" 
-            className="inline-flex items-center text-gray-500 hover:text-[#1e3a5f] transition-colors"
+            className="inline-flex items-center text-gray-500 hover:text-[var(--primary)] transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             返回首页
@@ -118,7 +118,7 @@ export default function Login() {
 
         {/* 标题区域 */}
         <div className="px-8 pt-4 pb-6 text-center">
-          <h1 className="text-3xl font-bold text-[#1e3a5f]">由基家族</h1>
+          <h1 className="text-3xl font-bold text-[var(--primary)]">由基家族</h1>
           <p className="text-gray-500 mt-2">
             {activeTab === 'login' ? '欢迎回来，请登录' : '注册账号，加入家族'}
           </p>
@@ -134,7 +134,7 @@ export default function Login() {
             }}
             className={`flex-1 py-4 text-center font-medium transition-colors ${
               activeTab === 'login'
-                ? 'text-[#1e3a5f] border-b-2 border-[#1e3a5f]'
+                ? 'text-[var(--primary)] border-b-2 border-[var(--primary)]'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -148,7 +148,7 @@ export default function Login() {
             }}
             className={`flex-1 py-4 text-center font-medium transition-colors ${
               activeTab === 'register'
-                ? 'text-[#1e3a5f] border-b-2 border-[#1e3a5f]'
+                ? 'text-[var(--primary)] border-b-2 border-[var(--primary)]'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -187,7 +187,7 @@ export default function Login() {
                     onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
                     placeholder="请输入用户名"
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                   />
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default function Login() {
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                     placeholder="请输入密码"
                     required
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                   />
                   <button
                     type="button"
@@ -219,7 +219,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-[#1e3a5f] to-[#2d4a6f] text-white rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] text-white rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
@@ -249,7 +249,7 @@ export default function Login() {
                     onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
                     placeholder="请输入用户名"
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                   />
                 </div>
               </div>
@@ -267,7 +267,7 @@ export default function Login() {
                     placeholder="至少6位密码"
                     required
                     minLength={6}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                   />
                   <button
                     type="button"
@@ -291,7 +291,7 @@ export default function Login() {
                     onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
                     placeholder="再次输入密码"
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                   />
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function Login() {
                   value={registerData.realName}
                   onChange={(e) => setRegisterData({ ...registerData, realName: e.target.value })}
                   placeholder="您的真实姓名"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                 />
               </div>
 
@@ -318,7 +318,7 @@ export default function Login() {
                   value={registerData.email}
                   onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                   placeholder="your@email.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                 />
               </div>
 
@@ -331,7 +331,7 @@ export default function Login() {
                   value={registerData.phone}
                   onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                   placeholder="13800138000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all"
                 />
               </div>
 
@@ -344,14 +344,14 @@ export default function Login() {
                   onChange={(e) => setRegisterData({ ...registerData, reason: e.target.value })}
                   placeholder="请简述您与家族的关系..."
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent outline-none transition-all resize-none"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-[#c9a227] to-[#d4b43a] text-white rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full py-3 bg-gradient-to-r from-[var(--accent)] to-[var(--accent)] text-white rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
                   <>

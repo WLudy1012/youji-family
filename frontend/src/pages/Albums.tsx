@@ -52,13 +52,13 @@ export default function Albums() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#1e3a5f]/10">
-                    <Image className="w-12 h-12 text-[#1e3a5f]/30" />
+                  <div className="w-full h-full flex items-center justify-center bg-[var(--primary)]/10">
+                    <Image className="w-12 h-12 text-[var(--primary)]/30" />
                   </div>
                 )}
               </div>
               <div className="p-4">
-                <h2 className="font-semibold text-[#1e3a5f] group-hover:text-[#c9a227] transition-colors">
+                <h2 className="font-semibold text-[var(--primary)] group-hover:text-[var(--accent)] transition-colors">
                   {album.name}
                 </h2>
                 {album.description && (

@@ -4,24 +4,24 @@
 
 /* 由基家族 - 主题配色 */
 :root {
-  --primary: #4ECDC4;    /* 主色调-青绿 */
-  --secondary: #45B7D1;  /* 辅色调-蓝色 */
-  --accent: #FF6B6B;     /* 点睛色-珊瑚红 */
-  --background: #F7F9FC; /* 背景色-柔白 */
-  --text: #2D3748;       /* 文字色-深灰 */
+  --primary: #06D6A0;    /* 主色调-翠绿 */
+  --secondary: #118AB2;  /* 辅色调-天蓝 */
+  --accent: #EF476F;     /* 点睛色-粉红 */
+  --background: #F8F9FA; /* 背景色-纯白 */
+  --text: #073B4C;       /* 文字色-墨蓝 */
 
   --primary-color: var(--primary);
-  --primary-dark: #34b5ab;
+  --primary-dark: var(--primary);
   --secondary-color: var(--accent);
-  --secondary-light: #ff8585;
+  --secondary-light: var(--accent);
   --accent-blue: var(--secondary);
-  --accent-yellow: #f9c80e;
-  --accent-purple: #9b5de5;
+  --accent-yellow: var(--accent);
+  --accent-purple: var(--secondary);
   --bg-color: var(--background);
-  --bg-soft: #edf2f7;
+  --bg-soft: var(--background);
   --text-color: var(--text);
-  --text-light: #5f6c7b;
-  --border-color: #dbe4ef;
+  --text-light: var(--text);
+  --border-color: color-mix(in srgb, var(--secondary) 20%, white);
 }
 
 * {
@@ -163,7 +163,7 @@ body {
   background:
     radial-gradient(circle at 12% 8%, rgba(78, 205, 196, 0.18), transparent 36%),
     radial-gradient(circle at 88% 0%, rgba(69, 183, 209, 0.14), transparent 38%),
-    linear-gradient(180deg, #f7f9fc 0%, #f1f5fb 50%, #edf2f7 100%);
+    linear-gradient(180deg, var(--background) 0%, color-mix(in srgb, var(--background) 88%, white) 50%, color-mix(in srgb, var(--secondary) 10%, white) 100%);
   color: var(--text);
 }
 
@@ -189,35 +189,35 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #34b5ab, #399db5);
+  background: linear-gradient(135deg, var(--primary), #399db5);
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #ff6b6b, #ff8a5b);
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 75%, #ff9f43));
   color: #ffffff;
   font-weight: 600;
 }
 
 .btn-secondary:hover {
-  background: linear-gradient(135deg, #ff5f5f, #ff7a4f);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 90%, black), color-mix(in srgb, var(--accent) 70%, #ff9f43));
 }
 
 .page-title {
-  color: #2f6fa3;
-  border-bottom-color: #f9c80e;
+  color: var(--secondary);
+  border-bottom-color: color-mix(in srgb, var(--accent) 70%, var(--secondary));
   letter-spacing: 0.02em;
 }
 
 a {
-  color: #45b7d1;
+  color: var(--secondary);
 }
 
 a:hover {
-  color: #9b5de5;
+  color: color-mix(in srgb, var(--accent) 45%, var(--secondary));
 }
 
 .line-clamp-2 {

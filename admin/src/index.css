@@ -17,8 +17,8 @@
   --admin-primary: var(--primary);
   --admin-coral: var(--accent);
   --admin-blue: var(--secondary);
-  --admin-yellow: #f9c80e;
-  --admin-purple: #9b5de5;
+  --admin-yellow: var(--accent);
+  --admin-purple: var(--secondary);
   --admin-text: var(--text);
 }
 
@@ -26,7 +26,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background:
     radial-gradient(circle at 0 0, rgba(78, 205, 196, 0.18), transparent 35%),
-    linear-gradient(160deg, #f7f9fc, #edf2f7);
+    linear-gradient(160deg, var(--background), color-mix(in srgb, var(--secondary) 12%, white));
   color: var(--text);
 }
 
@@ -62,14 +62,14 @@ h1,h2,h3,h4,p,span,li,label, .ant-typography {
 }
 
 .ant-btn-primary {
-  background: linear-gradient(135deg, #4ecdc4, #45b7d1) !important;
-  border-color: #4ecdc4 !important;
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  border-color: var(--primary) !important;
   color: #ffffff !important;
   font-weight: 600;
 }
 
 .ant-btn-primary:hover {
-  background: linear-gradient(135deg, #43bbb3, #399eb6) !important;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 86%, black), color-mix(in srgb, var(--secondary) 86%, black)) !important;
 }
 
 .ant-modal-content {
@@ -79,7 +79,7 @@ h1,h2,h3,h4,p,span,li,label, .ant-typography {
 }
 .ant-modal-title {
   background: transparent !important;
-  color: #2f6fa3 !important;
+  color: var(--secondary) !important;
 }
 
 .ant-tag-gold {
@@ -88,5 +88,5 @@ h1,h2,h3,h4,p,span,li,label, .ant-typography {
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #e7eef7; }
-::-webkit-scrollbar-thumb { background: #45b7d1; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #3699b0; }
