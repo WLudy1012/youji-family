@@ -5,11 +5,11 @@
 }
 
 :root {
-  --primary: #06D6A0;    /* 主色调-翠绿 */
-  --secondary: #118AB2;  /* 辅色调-天蓝 */
-  --accent: #EF476F;     /* 点睛色-粉红 */
-  --background: #F8F9FA; /* 背景色-纯白 */
-  --text: #073B4C;       /* 文字色-墨蓝 */
+  --primary: #4ECDC4;    /* 主色调-青绿 */
+  --secondary: #45B7D1;  /* 辅色调-蓝色 */
+  --accent: #FF6B6B;     /* 点睛色-珊瑚红 */
+  --background: #F7F9FC; /* 背景色-柔白 */
+  --text: #2D3748;       /* 文字色-深灰 */
 
   --admin-bg: var(--background);
   --admin-surface: rgba(255, 255, 255, 0.78);
