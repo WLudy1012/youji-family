@@ -76,6 +76,8 @@ export default function Layout() {
     return location.pathname.startsWith(path)
   }
 
+  const logoSrc = config?.site_logo?.trim() || '/default-family-logo.svg'
+
   return (
     <div className="app-shell min-h-screen flex flex-col">
       {/* 导航栏 */}
@@ -84,9 +86,7 @@ export default function Layout() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              {config?.site_logo && (
-                <img src={config.site_logo} alt="logo" className="h-10 w-10 object-contain" />
-              )}
+              <img src={logoSrc} alt="logo" className="h-10 w-10 object-contain" />
               <span className="text-xl font-bold">{config?.site_name || '由基家族'}</span>
             </Link>
 
